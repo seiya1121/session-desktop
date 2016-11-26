@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
-    <title>Session</title>
+    <title>electron es6 react boilerplate</title>
+    <script>
+      // install babel hooks in the renderer process
+      require('babel-register');
+      require('./app/scripts/app')
+    </script>
   </head>
-  <body>
-    <h1>Hello World!</h1>
-  </body>
 
-  <script>
-    // You can also require other files to run in this process
-    require('./renderer.js')
-  </script>
+  <body>
+  </body>
 </html>
