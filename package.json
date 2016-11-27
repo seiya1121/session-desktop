@@ -35,10 +35,13 @@
     "electron-packager": "^8.3.0",
     "eslint": "^3.11.0",
     "eslint-plugin-react": "^6.7.1",
+    "reactotron-react-js": "^1.5.2",
     "webpack": "^1.13.3"
   },
   "dependencies": {
     "react": "^15.4.1",
-    "react-dom": "^15.4.1"
+    "react-dom": "^15.4.1",
+    "react-mdl": "^1.9.0",
+    "react-youtube": "^7.2.0"
   }
 }

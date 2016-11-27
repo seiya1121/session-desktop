@@ -2,14 +2,16 @@
 <html>
   <head>
     <title>electron es6 react boilerplate</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="./app/assets/mdl/material.css">
+    <script src="./app/assets/mdl/material.js"></script>
     <script>
       // install babel hooks in the renderer process
       require('babel-register');
-      require('./app/scripts/app')
+      require('./app/scripts/app');
     </script>
   </head>
-
   <body>
-    <div id="result"></div>
+    <div id="root"></div>
   </body>
 </html>
