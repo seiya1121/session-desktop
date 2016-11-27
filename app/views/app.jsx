@@ -1,9 +1,12 @@
 'use babel';
 
-const React = require("react");
+import React from 'react';
+import uikit from 'react-uikit-base';
 
 export default class App extends React.Component {
   render() {
-    return <h1>React in Electron!</h1>;
+    return (
+      <h1>Session</h1>
+    )
   }
 }

@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { electron, app, BrowserWindow } from 'electron';
 
 let mainWindow = null;
 
