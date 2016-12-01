@@ -3,6 +3,7 @@
 import React from 'react';
 import { Button, Card, CardText } from 'react-mdl';
 import { YouTube } from 'react-youtube';
+import firebase from 'firebase';
 import 'whatwg-fetch';
 
 export default class App extends React.Component {
