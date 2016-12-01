@@ -17,12 +17,11 @@ export default class App extends React.Component {
     };
     this.apiTest = this.apiTest.bind(this);
     this.onChangeSearchText = this.onChangeSearchText.bind(this);
-  }
+  };
 
   onChangeSearchText(value) {
-    console.log(value)
-    this.setState({ searchText: value })
-  }
+    this.setState({ searchText: value });
+  };
 
   apiTest() {
     const url = 'https://echo.paw.cloud/';
