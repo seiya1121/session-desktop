@@ -5,6 +5,7 @@ import { Button, Textfield } from 'react-mdl';
 import { YouTube } from 'react-youtube';
 import firebase from 'firebase';
 import 'whatwg-fetch';
+import { youtubeApiKey } from '../../secret.js'
 
 const videoUrl = (id) => `https://www.YouTube.com/embed/${id}?enablejsapi=1`;
 
@@ -15,24 +16,45 @@ export default class App extends React.Component {
       videoId: 'qQLUiZsEnnA',
       searchText: '',
     };
-    this.apiTest = this.apiTest.bind(this);
     this.onChangeSearchText = this.onChangeSearchText.bind(this);
+    this.videoSearch = this.videoSearch.bind(this);
+    this.onKeyPress = this.onKeyPress.bind(this);
+  };
+
+  onKeyPress(e) {
+    if (e.which !== 13) return false;
+    e.preventDefault();
+    this.videoSearch();
+    return true;
   };
 
   onChangeSearchText(value) {
     this.setState({ searchText: value });
   };
 
-  apiTest() {
-    const url = 'https://echo.paw.cloud/';
-    fetch(url, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    }).then((response) => {
-      this.setState({ videoId: response.status });
-    }, function(error) {
-      error.message
-    })
+  videoSearch(){
+    const YouTube = require('youtube-node');
+    const youTube = new YouTube();
+    youTube.setKey(youtubeApiKey);
+    youTube.search(
+      this.state.searchText,
+      10,
+      (error, result) => {
+        if(error){
+          console.log(error);
+        }else{
+          console.log(
+            result.items.map((it) => {
+              return {
+                videoId: it.id.videoId,
+                title: it.snippet.title,
+                thumbnailUrl: it.snippet.thumbnails.default.url
+              }
+            })
+          );
+        }
+      }
+    );
   };
 
   render() {
@@ -44,15 +66,14 @@ export default class App extends React.Component {
             type='text'
             placeholder='type something you want to share'
             onChange={(e) => this.onChangeSearchText(e.target.value)}
+            onKeyPress={this.onKeyPress}
             value={this.state.searchText}
             label="Expandable Input"
             expandable
             expandableIcon="search"
           />
-          <Button raised colored onClick={this.apiTest}>{this.state.videoId}</Button>
         </div>
         <iframe width="560" height="315" src={videoUrl(this.state.videoId)} frameBorder="0"></iframe>
-
       </div>
     );
   }
