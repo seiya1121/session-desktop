@@ -30,6 +30,7 @@ export default class App extends React.Component {
     this.videoSearch = this.videoSearch.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
     this.onClickSetQue = this.onClickSetQue.bind(this);
+    this.onClickDeleteQue = this.onClickDeleteQue.bind(this);
   }
 
   onKeyPress(e) {
@@ -41,6 +42,10 @@ export default class App extends React.Component {
 
   onClickSetQue(video) {
     this.setState({ que: [...this.state.que, queItem(video)] ,playingVideo: video });
+  }
+
+  onClickDeleteQue(index) {
+    this.setState({ que: this.state.que.filter((video, i) => i !== index) });
   }
 
   onChangeSearchText(value) {
@@ -121,66 +126,16 @@ export default class App extends React.Component {
           callActionWhenSwipingFarRight={callActionWhenSwipingFarRight}
           callActionWhenSwipingFarLeft={callActionWhenSwipingFarLeft}
         >
-          <li className="list-group-item">
+          <li className="slist-group-item">
             <img className="img-circle media-object pull-left" src={video.thumbnail.url} width="32" height="32"></img>
             <div className="media-body">
               <strong>{video.title}</strong>
             </div>
+            <span className="icon icon-cancel" onClick={() => this.onClickDeleteQue(i)}></span>
           </li>
         </SwipeToRevealOptions>
       )
     });
-
-    const items = [
-      {
-        leftOptions: [{
-          label: 'Trash',
-          class: 'trash'
-        }],
-        rightOptions: [{
-          label: 'Move',
-          class: 'move',
-        },{
-          label: 'Archive',
-          class: 'archive',
-        }],
-        content: "Mail from Mathieu",
-        callActionWhenSwipingFarLeft: true,
-        callActionWhenSwipingFarRight: true
-      },
-      {
-        leftOptions: [{
-          label: 'Trash',
-          class: 'trash'
-        }],
-        rightOptions: [{
-          label: 'Move',
-          class: 'move',
-        },{
-          label: 'Archive',
-          class: 'archive',
-        }],
-        content: "Mail from Arseny",
-        callActionWhenSwipingFarRight: true,
-        callActionWhenSwipingFarLeft: false
-      },
-      {
-        leftOptions: [{
-          label: 'Trash',
-          class: 'trash'
-        }],
-        rightOptions: [{
-          label: 'Move',
-          class: 'move',
-        },{
-          label: 'Archive',
-          class: 'archive',
-        }],
-        content: "Mail from Bruno",
-        callActionWhenSwipingFarRight: false,
-        callActionWhenSwipingFarLeft: false
-      }
-    ];
 
     return (
       <div className="window">
