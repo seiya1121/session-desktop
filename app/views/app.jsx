@@ -16,11 +16,6 @@ const queItem = (video) => ({
   callActionWhenSwipingFarRight: false
 });
 
-const name = "seiya1121";
-const email = "seiya.kawamura@gmail.com";
-
-Firebase.database().ref('users/' + userId).set({ username: name, email: email });
-
 export default class App extends React.Component {
   constructor(props) {
     super(props);
