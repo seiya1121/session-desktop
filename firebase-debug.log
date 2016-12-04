@@ -1,0 +1,15 @@
+[debug] ----------------------------------------------------------------------
+[debug] Command:      /Users/SEIYA/.nodebrew/node/v6.2.0/bin/node /Users/SEIYA/.nodebrew/current/bin/firebase serve
+[debug] CLI Version:  3.2.0
+[debug] Platform:     darwin
+[debug] Node Version: v6.2.0
+[debug] Time:         Sun Dec 04 2016 21:33:10 GMT+0900 (JST)
+[debug] ----------------------------------------------------------------------
+[debug] 
+[info] Starting Firebase development server...
+[info] 
+[info] Project Directory: /Users/SEIYA/my_apps/session
+[warn] ⚠  Port 5000 is not available. Trying another port...
+[info] Public Directory: public
+[info] 
+[info] Server listening at: http://localhost:5001

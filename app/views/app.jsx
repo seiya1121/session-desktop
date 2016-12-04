@@ -3,8 +3,8 @@
 import React from 'react';
 // import { Button, Textfield, Card, CardTitle, CardActions } from 'react-mdl';
 // import { YouTube } from 'react-youtube';
-import firebase from 'firebase';
-import { youtubeApiKey } from '../../secret.js'
+import { Firebase } from '../scripts/firebaseApp.js'
+import { YOUTUBE_API_KEY } from '../../secret.js'
 import SwipeToRevealOptions from 'react-swipe-to-reveal-options';
 
 const videoUrl = (id) => `https://www.YouTube.com/embed/${id}?enablejsapi=1`;
@@ -15,6 +15,11 @@ const queItem = (video) => ({
   callActionWhenSwipingFarLeft: false,
   callActionWhenSwipingFarRight: false
 });
+
+const name = "seiya1121";
+const email = "seiya.kawamura@gmail.com";
+
+Firebase.database().ref('users/' + userId).set({ username: name, email: email });
 
 export default class App extends React.Component {
   constructor(props) {
@@ -55,7 +60,7 @@ export default class App extends React.Component {
   videoSearch(){
     const YouTube = require('youtube-node');
     const youTube = new YouTube();
-    youTube.setKey(youtubeApiKey);
+    youTube.setKey(YOUTUBE_API_KEY);
     youTube.search(
       this.state.searchText,
       50,
