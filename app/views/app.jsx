@@ -3,7 +3,7 @@
 import React from 'react';
 // import { Button, Textfield, Card, CardTitle, CardActions } from 'react-mdl';
 // import { YouTube } from 'react-youtube';
-import { Firebase } from '../scripts/firebaseApp.js'
+// import { Firebase } from '../scripts/firebaseApp.js'
 import { YOUTUBE_API_KEY } from '../../secret.js'
 import SwipeToRevealOptions from 'react-swipe-to-reveal-options';
 
