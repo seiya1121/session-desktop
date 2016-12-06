@@ -1,9 +1,7 @@
 'use babel';
 
 import React from 'react';
-// import { Button, Textfield, Card, CardTitle, CardActions } from 'react-mdl';
-// import { YouTube } from 'react-youtube';
-// import { Firebase } from '../scripts/firebaseApp.js'
+import { firebaseApp, firebaseDb } from '../scripts/firebaseApp.js'
 import { YOUTUBE_API_KEY } from '../../secret.js'
 import SwipeToRevealOptions from 'react-swipe-to-reveal-options';
 
@@ -42,6 +40,13 @@ export default class App extends React.Component {
 
   onClickSetQue(video) {
     this.setState({ que: [...this.state.que, queItem(video)] ,playingVideo: video });
+    firebaseDb.ref('ques/' + video.videoId).set({ title: video.title });
+    console.log(firebaseDb.ref().child('ques').push().key);
+    const quesRef = firebaseDb.ref('ques/');
+    quesRef.on('value', (snapshot) => {
+      console.log(snapshot);
+      console.log(snapshot.val());
+    });
   }
 
   onClickDeleteQue(index) {
