@@ -14,6 +14,12 @@ const queItem = (video) => ({
   callActionWhenSwipingFarRight: false
 });
 
+const queRef = firebaseDb.ref('que/');
+
+queRef.on('value', (data) => {
+  console.log(data.val());
+});
+
 export default class App extends React.Component {
   constructor(props) {
     super(props);
@@ -39,14 +45,14 @@ export default class App extends React.Component {
   }
 
   onClickSetQue(video) {
-    this.setState({ que: [...this.state.que, queItem(video)] ,playingVideo: video });
-    firebaseDb.ref('ques/' + video.videoId).set({ title: video.title });
-    console.log(firebaseDb.ref().child('ques').push().key);
-    const quesRef = firebaseDb.ref('ques/');
-    quesRef.on('value', (snapshot) => {
-      console.log(snapshot);
-      console.log(snapshot.val());
-    });
+    const { videoId, title, thumbnail } = video;
+    queRef.push({ videoId, title, thumbnail });
+    queRef.on(
+      'child_added',
+      (snapshot) => {
+        this.setState({ que: [...this.state.que, queItem(snapshot.val())] })
+      }
+    );
   }
 
   onClickDeleteQue(index) {

@@ -13,3 +13,17 @@
 [info] Public Directory: public
 [info] 
 [info] Server listening at: http://localhost:5001
+[debug] ----------------------------------------------------------------------
+[debug] Command:      /Users/SEIYA/.nodebrew/node/v6.2.0/bin/node /Users/SEIYA/.nodebrew/current/bin/firebase serve
+[debug] CLI Version:  3.2.0
+[debug] Platform:     darwin
+[debug] Node Version: v6.2.0
+[debug] Time:         Sun Dec 11 2016 15:17:24 GMT+0900 (JST)
+[debug] ----------------------------------------------------------------------
+[debug] 
+[info] Starting Firebase development server...
+[info] 
+[info] Project Directory: /Users/SEIYA/my_apps/session
+[info] Public Directory: public
+[info] 
+[info] Server listening at: http://localhost:5000
