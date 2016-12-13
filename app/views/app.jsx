@@ -1,24 +1,12 @@
 'use babel';
 
 import React from 'react';
-import { firebaseApp, firebaseDb } from '../scripts/firebaseApp.js'
+import { firebaseApp, firebaseDb, base } from '../scripts/firebaseApp.js'
 import { YOUTUBE_API_KEY } from '../../secret.js'
 import SwipeToRevealOptions from 'react-swipe-to-reveal-options';
+import firebase from 'firebase';
 
 const videoUrl = (id) => `https://www.YouTube.com/embed/${id}?enablejsapi=1`;
-const queItem = (video) => ({
-  leftOptions: [{ label: 'Skip', class: 'Skip' }],
-  rightOptions: [],
-  video,
-  callActionWhenSwipingFarLeft: false,
-  callActionWhenSwipingFarRight: false
-});
-
-const queRef = firebaseDb.ref('que/');
-
-queRef.on('value', (data) => {
-  console.log(data.val());
-});
 
 export default class App extends React.Component {
   constructor(props) {
@@ -28,14 +16,31 @@ export default class App extends React.Component {
       searchText: '',
       searchResult: [],
       searchResultNum: '',
-      que: [],
+      que: []
     };
     this.onChangeSearchText = this.onChangeSearchText.bind(this);
     this.videoSearch = this.videoSearch.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
     this.onClickSetQue = this.onClickSetQue.bind(this);
     this.onClickDeleteQue = this.onClickDeleteQue.bind(this);
+    this.setQue = this.setQue.bind(this);
   }
+
+  componentWillMount() {
+    base.bindToState('que', {
+      context: this,
+      state: 'que',
+      asArray: true
+    });
+  }
+
+  componentDidMount(){
+    base.syncState('que', {
+      context: this,
+      state: 'que',
+      asArray: true
+    });
+ }
 
   onKeyPress(e) {
     if (e.which !== 13) return false;
@@ -44,15 +49,12 @@ export default class App extends React.Component {
     return true;
   }
 
+  setQue(video){
+    this.setState({ que: [...this.state.que, video] })
+  }
+
   onClickSetQue(video) {
-    const { videoId, title, thumbnail } = video;
-    queRef.push({ videoId, title, thumbnail });
-    queRef.on(
-      'child_added',
-      (snapshot) => {
-        this.setState({ que: [...this.state.que, queItem(snapshot.val())] })
-      }
-    );
+    this.setState({ que: [...this.state.que, video] })
   }
 
   onClickDeleteQue(index) {
@@ -127,26 +129,16 @@ export default class App extends React.Component {
       </ul>
     ));
 
-    const queNode = this.state.que.map((item, i) => {
-      const { video, leftOptions, rightOptions, callActionWhenSwipingFarRight, callActionWhenSwipingFarLeft } = item;
-      return (
-        <SwipeToRevealOptions
-          key={i}
-          leftOptions={leftOptions}
-          rightOptions={rightOptions}
-          callActionWhenSwipingFarRight={callActionWhenSwipingFarRight}
-          callActionWhenSwipingFarLeft={callActionWhenSwipingFarLeft}
-        >
-          <li className="slist-group-item">
-            <img className="img-circle media-object pull-left" src={video.thumbnail.url} width="32" height="32"></img>
-            <div className="media-body">
-              <strong>{video.title}</strong>
-            </div>
-            <span className="icon icon-cancel" onClick={() => this.onClickDeleteQue(i)}></span>
-          </li>
-        </SwipeToRevealOptions>
+    const queNode = this.state.que.map((video, i) => (
+        <li key={i} className="slist-group-item">
+          <img className="img-circle media-object pull-left" src={video.thumbnail.url} width="32" height="32"></img>
+          <div className="media-body">
+            <strong>{video.title}</strong>
+          </div>
+          <span className="icon icon-cancel" onClick={() => this.onClickDeleteQue(i)}></span>
+        </li>
       )
-    });
+    );
 
     return (
       <div className="window">
