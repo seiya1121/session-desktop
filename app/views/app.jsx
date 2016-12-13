@@ -7,6 +7,7 @@ import SwipeToRevealOptions from 'react-swipe-to-reveal-options';
 import firebase from 'firebase';
 
 const videoUrl = (id) => `https://www.YouTube.com/embed/${id}?enablejsapi=1`;
+const SyncStates = ['que', 'comments'];
 
 export default class App extends React.Component {
   constructor(props) {
@@ -14,38 +15,46 @@ export default class App extends React.Component {
     this.state = {
       playingVideo: '',
       searchText: '',
+      commentText: '',
       searchResult: [],
       searchResultNum: '',
-      que: []
+      que: [],
+      comments: [],
     };
-    this.onChangeSearchText = this.onChangeSearchText.bind(this);
+    this.onChangeText = this.onChangeText.bind(this);
     this.videoSearch = this.videoSearch.bind(this);
-    this.onKeyPress = this.onKeyPress.bind(this);
+    this.onKeyPressForSearch = this.onKeyPressForSearch.bind(this);
+    this.onKeyPressForComment = this.onKeyPressForComment.bind(this);
     this.onClickSetQue = this.onClickSetQue.bind(this);
     this.onClickDeleteQue = this.onClickDeleteQue.bind(this);
     this.setQue = this.setQue.bind(this);
   }
 
   componentWillMount() {
-    base.bindToState('que', {
-      context: this,
-      state: 'que',
-      asArray: true
-    });
+    SyncStates.map((state) => (
+      base.bindToState(state, { context: this, state, asArray: true });
+      // base.bindToState('que', { context: this, state: 'que', asArray: true });
+    ))
   }
 
   componentDidMount(){
-    base.syncState('que', {
-      context: this,
-      state: 'que',
-      asArray: true
-    });
+    SyncStates.map((state) => (
+      base.syncState(state, { context: this, state, asArray: true });
+      // base.syncToState('que', { context: this, state: 'que', asArray: true });
+    ));
  }
 
-  onKeyPress(e) {
+  onKeyPressForSearch(e) {
     if (e.which !== 13) return false;
     e.preventDefault();
     this.videoSearch();
+    return true;
+  }
+
+  onKeyPressForComment(e) {
+    if (e.which !== 13) return false;
+    e.preventDefault();
+    this.setState({ comments: [...this.state.comments, e.target.value], commentText: '' });
     return true;
   }
 
@@ -61,8 +70,8 @@ export default class App extends React.Component {
     this.setState({ que: this.state.que.filter((video, i) => i !== index) });
   }
 
-  onChangeSearchText(value) {
-    this.setState({ searchText: value });
+  onChangeText(type, value) {
+    this.setState({ [type]: value });
   }
 
   videoSearch(){
@@ -140,6 +149,14 @@ export default class App extends React.Component {
       )
     );
 
+    const commentsNode = this.state.comments.map((comment, i) => (
+      <li key={i}>
+        <div>
+          <p>{comment}</p>
+        </div>
+      </li>
+    ))
+
     return (
       <div className="window">
         {headerNode}
@@ -152,6 +169,18 @@ export default class App extends React.Component {
               </h5>
               <ul className="list-group">
                 {queNode}
+              </ul>
+              <ul className="list-group">
+                <input
+                  className="form-control"
+                  type="text"
+                  placeholder="type comment"
+                  onChange={(e) => this.onChangeText('commentText', e.target.value)}
+                  onKeyPress={this.onKeyPressForComment}
+                  value={this.state.commentText}
+                >
+                </input>
+                {commentsNode}
               </ul>
             </div>
 
@@ -170,9 +199,9 @@ export default class App extends React.Component {
                   <input
                     className="form-control"
                     type="text"
-                    placeholder="Search for someone"
-                    onChange={(e) => this.onChangeSearchText(e.target.value)}
-                    onKeyPress={this.onKeyPress}
+                    placeholder="Search for something you want"
+                    onChange={(e) => this.onChangeText('searchText', e.target.value)}
+                    onKeyPress={this.onKeyPressForSearch}
                     value={this.state.searchText}
                   >
                   </input>
