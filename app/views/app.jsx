@@ -7,7 +7,7 @@ import SwipeToRevealOptions from 'react-swipe-to-reveal-options';
 import firebase from 'firebase';
 
 const videoUrl = (id) => `https://www.YouTube.com/embed/${id}?enablejsapi=1`;
-const SyncStates = ['que', 'comments'];
+const SyncStates = ['que', 'comments', 'users'];
 
 export default class App extends React.Component {
   constructor(props) {
@@ -16,15 +16,18 @@ export default class App extends React.Component {
       playingVideo: '',
       searchText: '',
       commentText: '',
+      userName: '',
       searchResult: [],
       searchResultNum: '',
       que: [],
       comments: [],
+      users: []
     };
     this.onChangeText = this.onChangeText.bind(this);
     this.videoSearch = this.videoSearch.bind(this);
     this.onKeyPressForSearch = this.onKeyPressForSearch.bind(this);
     this.onKeyPressForComment = this.onKeyPressForComment.bind(this);
+    this.onKeyPressForUserName = this.onKeyPressForUserName.bind(this);
     this.onClickSetQue = this.onClickSetQue.bind(this);
     this.onClickDeleteQue = this.onClickDeleteQue.bind(this);
     this.setQue = this.setQue.bind(this);
@@ -32,16 +35,14 @@ export default class App extends React.Component {
 
   componentWillMount() {
     SyncStates.map((state) => (
-      base.bindToState(state, { context: this, state, asArray: true });
-      // base.bindToState('que', { context: this, state: 'que', asArray: true });
+      base.bindToState(state, { context: this, state, asArray: true })
     ))
   }
 
   componentDidMount(){
     SyncStates.map((state) => (
-      base.syncState(state, { context: this, state, asArray: true });
-      // base.syncToState('que', { context: this, state: 'que', asArray: true });
-    ));
+      base.syncState(state, { context: this, state, asArray: true })
+    ))
  }
 
   onKeyPressForSearch(e) {
@@ -55,6 +56,14 @@ export default class App extends React.Component {
     if (e.which !== 13) return false;
     e.preventDefault();
     this.setState({ comments: [...this.state.comments, e.target.value], commentText: '' });
+    return true;
+  }
+
+  onKeyPressForUserName(e) {
+    if (e.which !== 13) return false;
+    e.preventDefault();
+    const userObj = { userName: e.target.value, mailAddress: `${e.target.value}@example.com` };
+    this.setState({ users: [...this.state.users, userObj], userName: '' });
     return true;
   }
 
@@ -157,6 +166,15 @@ export default class App extends React.Component {
       </li>
     ))
 
+    const usersNode = this.state.users.map((user, i) => (
+      <li key={i}>
+        <div>
+          <p>{user.name}</p>
+          <p>{user.mailAddress}</p>
+        </div>
+      </li>
+    ))
+
     return (
       <div className="window">
         {headerNode}
@@ -181,6 +199,18 @@ export default class App extends React.Component {
                 >
                 </input>
                 {commentsNode}
+              </ul>
+              <ul className="list-group">
+                <input
+                  className="form-control"
+                  type="text"
+                  placeholder="type comment"
+                  onChange={(e) => this.onChangeText('userName', e.target.value)}
+                  onKeyPress={this.onKeyPressForUserName}
+                  value={this.state.userName}
+                >
+                </input>
+                {usersNode}
               </ul>
             </div>
 
