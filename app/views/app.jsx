@@ -6,8 +6,13 @@ import { YOUTUBE_API_KEY } from '../../secret.js'
 import SwipeToRevealOptions from 'react-swipe-to-reveal-options';
 import firebase from 'firebase';
 
-const videoUrl = (id) => `https://www.YouTube.com/embed/${id}?enablejsapi=1`;
-const SyncStates = ['que', 'comments', 'users'];
+const videoUrl = (id) => `https://www.YouTube.com/embed/${id}`;
+const BindStates = ['que', 'users', 'comments', 'playingVideo'];
+const SyncStates = ['que', 'users', 'comments'];
+const videoObect = (video) => {
+  const { videoId, title, thumbnail } = video;
+  return { videoId, title, thumbnail };
+}
 
 export default class App extends React.Component {
   constructor(props) {
@@ -31,6 +36,13 @@ export default class App extends React.Component {
     this.onClickSetQue = this.onClickSetQue.bind(this);
     this.onClickDeleteQue = this.onClickDeleteQue.bind(this);
     this.setQue = this.setQue.bind(this);
+  }
+
+  onClickSetPlayingVideo(video) {
+    base.update(
+      'playingVideo', { data: videoObect(video) }
+    )
+    .then(() => this.setState({ playingVideo: video }))
   }
 
   componentWillMount() {
@@ -68,7 +80,12 @@ export default class App extends React.Component {
   }
 
   setQue(video){
-    this.setState({ que: [...this.state.que, video] })
+    console.log(video)
+    const { que } = this.state;
+    if (que.length === 0){
+      this.setState({ playingVideo: videoObject(video) })
+    };
+    this.setState({ que: [...que, video] })
   }
 
   onClickSetQue(video) {
@@ -148,7 +165,11 @@ export default class App extends React.Component {
     ));
 
     const queNode = this.state.que.map((video, i) => (
-        <li key={i} className="slist-group-item">
+        <li
+          key={i}
+          className="slist-group-item"
+          onClick={() => this.onClickSetPlayingVideo(video)}
+        >
           <img className="img-circle media-object pull-left" src={video.thumbnail.url} width="32" height="32"></img>
           <div className="media-body">
             <strong>{video.title}</strong>
