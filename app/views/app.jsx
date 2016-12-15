@@ -4,7 +4,7 @@ import React from 'react';
 import ReactBaseComponent from '../scripts/reactBaseComponent.jsx'
 import { firebaseApp, firebaseDb, base } from '../scripts/firebaseApp.js'
 import { YOUTUBE_API_KEY } from '../../secret.js'
-import SwipeToRevealOptions from 'react-swipe-to-reveal-options';
+// import SwipeToRevealOptions from 'react-swipe-to-reveal-options';
 import YouTube from 'react-youtube';
 
 const BindStates = ['que', 'users', 'comments'];
@@ -31,7 +31,21 @@ export default class App extends ReactBaseComponent {
     this.bind('onKeyPressForSearch', 'onKeyPressForComment', 'onKeyPressForUserName');
     this.bind('onClickSetQue', 'onClickDeleteQue');
     // For YouTube Player
-    this.bind('onReady', 'onPause', 'onEnd');
+    this.bind('onReady', 'onPause', 'onEnd', 'onPlay');
+  }
+
+  componentWillMount() {
+    SyncStates.map((state) => (
+      base.bindToState(state, { context: this, state, asArray: true })
+    ))
+    base.bindToState('playingVideo', { context: this, state: 'playingVideo', asArray: false })
+  }
+
+  componentDidMount(){
+    SyncStates.map((state) => (
+      base.syncState(state, { context: this, state, asArray: true })
+    ))
+    base.syncState('playingVideo', { context: this, state: 'playingVideo', asArray: false })
   }
 
   setPlayingVideo(video){
@@ -39,6 +53,13 @@ export default class App extends ReactBaseComponent {
       playingVideo: video,
       que: this.state.que.filter((item) => item.key !== video.key)
     })
+  }
+
+  onPlay(event) {
+    let count = 1
+    console.log(event.target)
+    console.log(count += 1)
+    console.log(event.target.getCurrentTime());
   }
 
   onEnd() {
@@ -67,20 +88,6 @@ export default class App extends ReactBaseComponent {
       playingVideo: video,
       que: this.state.que.filter((item) => item.key !== video.key)
     }))
-  }
-
-  componentWillMount() {
-    SyncStates.map((state) => (
-      base.bindToState(state, { context: this, state, asArray: true })
-    ))
-    base.bindToState('playingVideo', { context: this, state: 'playingVideo', asArray: false })
-  }
-
-  componentDidMount(){
-    SyncStates.map((state) => (
-      base.syncState(state, { context: this, state, asArray: true })
-    ))
-    base.syncState('playingVideo', { context: this, state: 'playingVideo', asArray: false })
   }
 
   onKeyPressForSearch(e) {
@@ -238,6 +245,7 @@ export default class App extends ReactBaseComponent {
                 videoId={this.state.playingVideo.videoId}
                 opts={PlayerOpts}
                 onReady={this.onReady}
+                onPlay={this.onPlay}
                 onPause={this.onPause}
                 onEnd={this.onEnd}
               />
