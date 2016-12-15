@@ -231,6 +231,16 @@ export default class App extends ReactBaseComponent {
               <ul className="list-group">
                 {queNode}
               </ul>
+            </div>
+
+            <div className="pane">
+              <YouTube
+                videoId={this.state.playingVideo.videoId}
+                opts={PlayerOpts}
+                onReady={this.onReady}
+                onPause={this.onPause}
+                onEnd={this.onEnd}
+              />
               <ul className="list-group">
                 <input
                   className="form-control"
@@ -243,28 +253,6 @@ export default class App extends ReactBaseComponent {
                 </input>
                 {commentsNode}
               </ul>
-              <ul className="list-group">
-                <input
-                  className="form-control"
-                  type="text"
-                  placeholder="type comment"
-                  onChange={(e) => this.onChangeText('userName', e.target.value)}
-                  onKeyPress={this.onKeyPressForUserName}
-                  value={this.state.userName}
-                >
-                </input>
-                {usersNode}
-              </ul>
-            </div>
-
-            <div className="pane">
-              <YouTube
-                videoId={this.state.playingVideo.videoId}
-                opts={PlayerOpts}
-                onReady={this.onReady}
-                onPause={this.onPause}
-                onEnd={this.onEnd}
-              />
             </div>
 
             <div className="pane-sm sidebar">
