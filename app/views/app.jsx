@@ -48,8 +48,8 @@ export default class App extends ReactBaseComponent {
     base.syncState('playingVideo', { context: this, state: 'playingVideo', asArray: false })
   }
 
-  notification(title, body) {
-    new Notification(title, { body });
+  notification(title, option) {
+    new Notification(title, { body: option.body,  icon: option.icon });
   }
 
   setPlayingVideo(video){
@@ -60,7 +60,8 @@ export default class App extends ReactBaseComponent {
   }
 
   onPlay(event) {
-    this.notification('Now Playing♪', this.state.playingVideo.title);
+    const { title, thumbnail } = this.state.playingVideo;
+    this.notification('Now Playing♪', { body: title, icon: thumbnail.url });
     console.log(event.target);
     console.log(event.target.getCurrentTime());
   }
@@ -119,7 +120,8 @@ export default class App extends ReactBaseComponent {
       this.setState({ playingVideo: video })
     }else{
       this.setState({ que: [...que, video] })
-      this.notification('New Video Added!', `Added ${video.title}`);
+      const { title, thumbnail } = video;
+      this.notification('New Video Added!', { body: video.title, icon: thumbnail.url });
     };
   }
 
