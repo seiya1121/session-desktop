@@ -41,7 +41,10 @@ export default class App extends React.Component {
     base.update(
       'playingVideo', { data: videoObect(video) }
     )
-    .then(() => this.setState({ playingVideo: video }))
+    .then(() => this.setState({
+      playingVideo: video,
+      que: this.state.que.filter((item) => item.key !== video.key)
+    }))
   }
 
   componentWillMount() {
@@ -82,7 +85,6 @@ export default class App extends React.Component {
   }
 
   setQue(video){
-    console.log(video)
     const { que } = this.state;
     if (que.length === 0){
       this.setState({ playingVideo: videoObject(video) })
