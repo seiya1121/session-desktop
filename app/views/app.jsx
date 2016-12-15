@@ -4,7 +4,6 @@ import React from 'react';
 import { firebaseApp, firebaseDb, base } from '../scripts/firebaseApp.js'
 import { YOUTUBE_API_KEY } from '../../secret.js'
 import SwipeToRevealOptions from 'react-swipe-to-reveal-options';
-import firebase from 'firebase';
 
 const videoUrl = (id) => `https://www.YouTube.com/embed/${id}`;
 const BindStates = ['que', 'users', 'comments'];
