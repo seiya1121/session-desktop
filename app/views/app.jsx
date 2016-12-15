@@ -1,19 +1,18 @@
 'use babel';
 
 import React from 'react';
+import ReactBaseComponent from '../scripts/reactBaseComponent.jsx'
 import { firebaseApp, firebaseDb, base } from '../scripts/firebaseApp.js'
 import { YOUTUBE_API_KEY } from '../../secret.js'
 import SwipeToRevealOptions from 'react-swipe-to-reveal-options';
+import YouTube from 'react-youtube';
 
-const videoUrl = (id) => `https://www.YouTube.com/embed/${id}`;
 const BindStates = ['que', 'users', 'comments'];
 const SyncStates = ['que', 'users', 'comments'];
-const videoObect = (video) => {
-  const { videoId, title, thumbnail } = video;
-  return { videoId, title, thumbnail };
-}
 
-export default class App extends React.Component {
+const PlayerOpts = { height: '390', width: '640', playerVars: { autoplay: 1 } };
+
+export default class App extends ReactBaseComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -27,14 +26,37 @@ export default class App extends React.Component {
       comments: [],
       users: []
     };
-    this.onChangeText = this.onChangeText.bind(this);
-    this.videoSearch = this.videoSearch.bind(this);
-    this.onKeyPressForSearch = this.onKeyPressForSearch.bind(this);
-    this.onKeyPressForComment = this.onKeyPressForComment.bind(this);
-    this.onKeyPressForUserName = this.onKeyPressForUserName.bind(this);
-    this.onClickSetQue = this.onClickSetQue.bind(this);
-    this.onClickDeleteQue = this.onClickDeleteQue.bind(this);
-    this.setQue = this.setQue.bind(this);
+
+    this.bind('onChangeText', 'videoSearch', 'setPlayingVideo');
+    this.bind('onKeyPressForSearch', 'onKeyPressForComment', 'onKeyPressForUserName');
+    this.bind('onClickSetQue', 'onClickDeleteQue');
+    // For YouTube Player
+    this.bind('onReady', 'onPause', 'onEnd');
+  }
+
+  setPlayingVideo(video){
+    this.setState({
+      playingVideo: video,
+      que: this.state.que.filter((item) => item.key !== video.key)
+    })
+  }
+
+  onEnd() {
+    console.log(`end...${this.state.playingVideo.title}`)
+    if (this.state.que.length > 0) {
+      this.setPlayingVideo(this.state.que[0]);
+    } else {
+      this.setState({ playingVideo: '' })
+      console.log('There are no videos in the que.')
+    }
+  }
+
+  onPause() {
+    console.log(`pausing...${this.state.playingVideo.title}`)
+  }
+
+  onReady() {
+    console.log(`ready...${this.state.playingVideo.title}`)
   }
 
   onClickSetPlayingVideo(video) {
@@ -59,7 +81,6 @@ export default class App extends React.Component {
       base.syncState(state, { context: this, state, asArray: true })
     ))
     base.syncState('playingVideo', { context: this, state: 'playingVideo', asArray: false })
-    console.log(this.state.que)
   }
 
   onKeyPressForSearch(e) {
@@ -84,17 +105,13 @@ export default class App extends React.Component {
     return true;
   }
 
-  setQue(video){
+  onClickSetQue(video) {
     const { que } = this.state;
-    if (que.length === 0){
-      this.setState({ playingVideo: videoObject(video) })
+    if (que.length === 0 && this.state.playingVideo === ''){
+      this.setState({ playingVideo: video })
     }else{
       this.setState({ que: [...que, video] })
     };
-  }
-
-  onClickSetQue(video) {
-    this.setState({ que: [...this.state.que, video] })
   }
 
   onClickDeleteQue(index) {
@@ -241,11 +258,13 @@ export default class App extends React.Component {
             </div>
 
             <div className="pane">
-              <iframe
-                width="560"
-                height="315"
-                src={videoUrl(this.state.playingVideo.videoId)}
-              ></iframe>
+              <YouTube
+                videoId={this.state.playingVideo.videoId}
+                opts={PlayerOpts}
+                onReady={this.onReady}
+                onPause={this.onPause}
+                onEnd={this.onEnd}
+              />
             </div>
 
             <div className="pane-sm sidebar">
