@@ -27,7 +27,7 @@ export default class App extends ReactBaseComponent {
       users: []
     };
 
-    this.bind('onChangeText', 'videoSearch', 'setPlayingVideo');
+    this.bind('onChangeText', 'videoSearch', 'setPlayingVideo', 'notification');
     this.bind('onKeyPressForSearch', 'onKeyPressForComment', 'onKeyPressForUserName');
     this.bind('onClickSetQue', 'onClickDeleteQue');
     // For YouTube Player
@@ -48,6 +48,10 @@ export default class App extends ReactBaseComponent {
     base.syncState('playingVideo', { context: this, state: 'playingVideo', asArray: false })
   }
 
+  notification(title, body) {
+    new Notification(title, { body });
+  }
+
   setPlayingVideo(video){
     this.setState({
       playingVideo: video,
@@ -56,18 +60,16 @@ export default class App extends ReactBaseComponent {
   }
 
   onPlay(event) {
-    new Notification(`now playing: ${this.state.playingVideo.title}`)
+    this.notification('Now Playing♪', this.state.playingVideo.title);
     console.log(event.target);
     console.log(event.target.getCurrentTime());
   }
 
   onEnd() {
-    console.log(`end...${this.state.playingVideo.title}`)
     if (this.state.que.length > 0) {
       this.setPlayingVideo(this.state.que[0]);
     } else {
       this.setState({ playingVideo: '' })
-      console.log('There are no videos in the que.')
     }
   }
 
@@ -117,7 +119,7 @@ export default class App extends ReactBaseComponent {
       this.setState({ playingVideo: video })
     }else{
       this.setState({ que: [...que, video] })
-      new Notification(`${video.title}が追加されました。`)
+      this.notification('New Video Added!', `Added ${video.title}`);
     };
   }
 
