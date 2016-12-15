@@ -7,7 +7,7 @@ import SwipeToRevealOptions from 'react-swipe-to-reveal-options';
 import firebase from 'firebase';
 
 const videoUrl = (id) => `https://www.YouTube.com/embed/${id}`;
-const BindStates = ['que', 'users', 'comments', 'playingVideo'];
+const BindStates = ['que', 'users', 'comments'];
 const SyncStates = ['que', 'users', 'comments'];
 const videoObect = (video) => {
   const { videoId, title, thumbnail } = video;
@@ -49,13 +49,16 @@ export default class App extends React.Component {
     SyncStates.map((state) => (
       base.bindToState(state, { context: this, state, asArray: true })
     ))
+    base.bindToState('playingVideo', { context: this, state: 'playingVideo', asArray: false })
   }
 
   componentDidMount(){
     SyncStates.map((state) => (
       base.syncState(state, { context: this, state, asArray: true })
     ))
- }
+    base.syncState('playingVideo', { context: this, state: 'playingVideo', asArray: false })
+    console.log(this.state.que)
+  }
 
   onKeyPressForSearch(e) {
     if (e.which !== 13) return false;
@@ -84,8 +87,9 @@ export default class App extends React.Component {
     const { que } = this.state;
     if (que.length === 0){
       this.setState({ playingVideo: videoObject(video) })
+    }else{
+      this.setState({ que: [...que, video] })
     };
-    this.setState({ que: [...que, video] })
   }
 
   onClickSetQue(video) {
