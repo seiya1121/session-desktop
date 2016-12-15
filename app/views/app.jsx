@@ -56,9 +56,8 @@ export default class App extends ReactBaseComponent {
   }
 
   onPlay(event) {
-    let count = 1
-    console.log(event.target)
-    console.log(count += 1)
+    new Notification(`now playing: ${this.state.playingVideo.title}`)
+    console.log(event.target);
     console.log(event.target.getCurrentTime());
   }
 
@@ -118,6 +117,7 @@ export default class App extends ReactBaseComponent {
       this.setState({ playingVideo: video })
     }else{
       this.setState({ que: [...que, video] })
+      new Notification(`${video.title}が追加されました。`)
     };
   }
 
