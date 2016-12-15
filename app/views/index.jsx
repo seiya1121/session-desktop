@@ -12,7 +12,7 @@ const SyncStates = ['que', 'users', 'comments'];
 
 const PlayerOpts = { height: '390', width: '640', playerVars: { autoplay: 1 } };
 
-export default class App extends ReactBaseComponent {
+export default class Index extends ReactBaseComponent {
   constructor(props) {
     super(props);
     this.state = {

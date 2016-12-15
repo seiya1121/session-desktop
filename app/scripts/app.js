@@ -2,8 +2,8 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from '../views/app.jsx';
+import Index from '../views/index.jsx';
 
 window.onload = () => {
-  ReactDOM.render(<App />, document.getElementById('root'));
+  ReactDOM.render(<Index />, document.getElementById('root'));
 }
