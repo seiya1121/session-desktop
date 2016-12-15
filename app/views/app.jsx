@@ -49,7 +49,7 @@ export default class App extends ReactBaseComponent {
   }
 
   notification(title, option) {
-    new Notification(title, { body: option.body,  icon: option.icon });
+    new Notification(title, { body: option.body,  icon: option.icon, silent: true });
   }
 
   setPlayingVideo(video){
@@ -83,13 +83,10 @@ export default class App extends ReactBaseComponent {
   }
 
   onClickSetPlayingVideo(video) {
-    base.update(
-      'playingVideo', { data: videoObect(video) }
-    )
-    .then(() => this.setState({
+    this.setState({
       playingVideo: video,
       que: this.state.que.filter((item) => item.key !== video.key)
-    }))
+    });
   }
 
   onKeyPressForSearch(e) {
