@@ -28,7 +28,7 @@ export default class Index extends ReactBaseComponent {
     };
 
     this.bind('onChangeText', 'videoSearch', 'setPlayingVideo', 'notification');
-    this.bind('onKeyPressForSearch', 'onKeyPressForComment', 'onKeyPressForUserName');
+    this.bind('onKeyPressForSearch', 'onKeyPressForComment');
     this.bind('onClickSetQue', 'onClickDeleteQue');
     // For YouTube Player
     this.bind('onReady', 'onPause', 'onEnd', 'onPlay');
@@ -62,6 +62,7 @@ export default class Index extends ReactBaseComponent {
   onPlay(event) {
     const { title, thumbnail } = this.state.playingVideo;
     console.log(this.state.playingVideo);
+    this.setState({ comments: [...this.state.comments, `play ${title}`] })
     this.notification('Now Playing♪', { body: title, icon: thumbnail.url });
     console.log(event.target);
     console.log(event.target.getCurrentTime());
@@ -104,27 +105,25 @@ export default class Index extends ReactBaseComponent {
     return true;
   }
 
-  onKeyPressForUserName(e) {
-    if (e.which !== 13) return false;
-    e.preventDefault();
-    const userObj = { userName: e.target.value, mailAddress: `${e.target.value}@example.com` };
-    this.setState({ users: [...this.state.users, userObj], userName: '' });
-    return true;
-  }
-
   onClickSetQue(video) {
     const { que } = this.state;
+    const { title, thumbnail } = video;
     if (que.length === 0 && this.state.playingVideo === ''){
       this.setState({ playingVideo: video })
     }else{
-      this.setState({ que: [...que, video] })
-      const { title, thumbnail } = video;
-      this.notification('New Video Added!', { body: video.title, icon: thumbnail.url });
+      this.setState({
+        que: [...que, video],
+        comments: [...this.state.comments, `add ${title}`]
+      })
+      this.notification('New Video Added!', { body: title, icon: thumbnail.url });
     };
   }
 
-  onClickDeleteQue(index) {
-    this.setState({ que: this.state.que.filter((video, i) => i !== index) });
+  onClickDeleteQue(video) {
+    this.setState({
+      que: this.state.que.filter((item) => item.key !== video.key),
+      comments: [...this.state.comments, `delete ${video.title}`]
+    });
   }
 
   onChangeText(type, value) {
@@ -196,17 +195,21 @@ export default class Index extends ReactBaseComponent {
     ));
 
     const queNode = this.state.que.map((video, i) => (
-        <li
-          key={i}
-          className="slist-group-item"
-          onClick={() => this.onClickSetPlayingVideo(video)}
-        >
-          <img className="img-circle media-object pull-left" src={video.thumbnail.url} width="32" height="32"></img>
-          <div className="media-body">
-            <strong>{video.title}</strong>
+        <div>
+          <li
+            key={i}
+            className="slist-group-item"
+            onClick={() => this.onClickSetPlayingVideo(video)}
+          >
+            <img className="img-circle media-object pull-left" src={video.thumbnail.url} width="32" height="32"></img>
+            <div className="media-body">
+              <strong>{video.title}</strong>
+            </div>
+          </li>
+          <div>
+            <span className="icon icon-cancel" onClick={() => this.onClickDeleteQue(video)}></span>
           </div>
-          <span className="icon icon-cancel" onClick={() => this.onClickDeleteQue(i)}></span>
-        </li>
+        </div>
       )
     );
 
