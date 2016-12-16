@@ -61,6 +61,7 @@ export default class Index extends ReactBaseComponent {
 
   onPlay(event) {
     const { title, thumbnail } = this.state.playingVideo;
+    console.log(this.state.playingVideo);
     this.notification('Now Playing♪', { body: title, icon: thumbnail.url });
     console.log(event.target);
     console.log(event.target.getCurrentTime());
