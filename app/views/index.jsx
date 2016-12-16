@@ -49,7 +49,10 @@ export default class Index extends ReactBaseComponent {
   }
 
   notification(title, option) {
-    new Notification(title, { body: option.body,  icon: option.icon, silent: true });
+    new Notification(
+      `${title} (${this.state.que.length + 1} remained)`,
+      { body: option.body,  icon: option.icon, silent: true }
+    );
   }
 
   setPlayingVideo(video){
@@ -231,7 +234,7 @@ export default class Index extends ReactBaseComponent {
             <div className="pane">
               <h5 className="nav-group-title">
                 <span className="icon icon-music"></span>
-                Up Coming
+                Up Coming({this.state.que.length} videos}
               </h5>
               <ul className="list-group">
                 {queNode}
