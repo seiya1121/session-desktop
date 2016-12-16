@@ -55,17 +55,14 @@ export default class Index extends ReactBaseComponent {
   setPlayingVideo(video){
     this.setState({
       playingVideo: video,
-      que: this.state.que.filter((item) => item.key !== video.key)
-    })
+      que: this.state.que.filter((item) => item.key !== video.key),
+      comments: [...this.state.comments, `play ${video.title}`]
+    });
+    this.notification('Now Playing♪', { body: video.title, icon: video.thumbnail.url });
   }
 
-  onPlay(event) {
-    const { title, thumbnail } = this.state.playingVideo;
-    console.log(this.state.playingVideo);
-    this.setState({ comments: [...this.state.comments, `play ${title}`] })
-    this.notification('Now Playing♪', { body: title, icon: thumbnail.url });
-    console.log(event.target);
-    console.log(event.target.getCurrentTime());
+  onPlay() {
+    console.log('playing');
   }
 
   onEnd() {
@@ -85,10 +82,7 @@ export default class Index extends ReactBaseComponent {
   }
 
   onClickSetPlayingVideo(video) {
-    this.setState({
-      playingVideo: video,
-      que: this.state.que.filter((item) => item.key !== video.key)
-    });
+    this.setPlayingVideo(video);
   }
 
   onKeyPressForSearch(e) {
@@ -195,9 +189,8 @@ export default class Index extends ReactBaseComponent {
     ));
 
     const queNode = this.state.que.map((video, i) => (
-        <div>
+        <div key={i}>
           <li
-            key={i}
             className="slist-group-item"
             onClick={() => this.onClickSetPlayingVideo(video)}
           >
