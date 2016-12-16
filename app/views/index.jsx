@@ -69,7 +69,7 @@ export default class Index extends ReactBaseComponent {
     });
   }
 
-  onPlay() {
+  onPlay(video) {
     this.notification('Now Playing♪', { body: video.title, icon: video.thumbnail.url });
   }
 
@@ -248,7 +248,7 @@ export default class Index extends ReactBaseComponent {
                 videoId={this.state.playingVideo.videoId}
                 opts={PlayerOpts}
                 onReady={this.onReady}
-                onPlay={this.onPlay}
+                onPlay={() => this.onPlay(this.state.playingVideo)}
                 onPause={this.onPause}
                 onEnd={this.onEnd}
               />
