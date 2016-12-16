@@ -7,8 +7,13 @@ import { YOUTUBE_API_KEY } from '../../secret.js'
 // import SwipeToRevealOptions from 'react-swipe-to-reveal-options';
 import YouTube from 'react-youtube';
 
-const BindStates = ['que', 'users', 'comments'];
-const SyncStates = ['que', 'users', 'comments'];
+const SyncStates = [
+  { state: 'que', asArray: true },
+  { state: 'users', asArray: true },
+  { state: 'comments', asArray: true },
+  { state: 'playingVideo', asArray: false },
+  { state: 'notificationActive', asArray: false },
+];
 
 const PlayerOpts = { height: '390', width: '640', playerVars: { autoplay: 1 } };
 
@@ -24,7 +29,8 @@ export default class Index extends ReactBaseComponent {
       searchResultNum: '',
       que: [],
       comments: [],
-      users: []
+      users: [],
+      notificationActive: false
     };
 
     this.bind('onChangeText', 'videoSearch', 'setPlayingVideo', 'notification');
@@ -35,17 +41,17 @@ export default class Index extends ReactBaseComponent {
   }
 
   componentWillMount() {
-    SyncStates.map((state) => (
-      base.bindToState(state, { context: this, state, asArray: true })
-    ))
-    base.bindToState('playingVideo', { context: this, state: 'playingVideo', asArray: false })
+    SyncStates.map((obj) => {
+      const { state, asArray } = obj;
+      base.bindToState(state, { context: this, state, asArray });
+    });
   }
 
   componentDidMount(){
-    SyncStates.map((state) => (
-      base.syncState(state, { context: this, state, asArray: true })
-    ))
-    base.syncState('playingVideo', { context: this, state: 'playingVideo', asArray: false })
+    SyncStates.map((obj) => {
+      const { state, asArray } = obj;
+      base.syncState(state, { context: this, state, asArray });
+    });
   }
 
   notification(title, option) {
@@ -61,11 +67,10 @@ export default class Index extends ReactBaseComponent {
       que: this.state.que.filter((item) => item.key !== video.key),
       comments: [...this.state.comments, `play ${video.title}`]
     });
-    this.notification('Now Playing♪', { body: video.title, icon: video.thumbnail.url });
   }
 
   onPlay() {
-    console.log('playing');
+    this.notification('Now Playing♪', { body: video.title, icon: video.thumbnail.url });
   }
 
   onEnd() {
@@ -108,10 +113,7 @@ export default class Index extends ReactBaseComponent {
     if (que.length === 0 && this.state.playingVideo === ''){
       this.setState({ playingVideo: video })
     }else{
-      this.setState({
-        que: [...que, video],
-        comments: [...this.state.comments, `add ${title}`]
-      })
+      this.setState({ que: [...que, video] })
       this.notification('New Video Added!', { body: title, icon: thumbnail.url });
     };
   }
