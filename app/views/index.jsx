@@ -11,8 +11,7 @@ const SyncStates = [
   { state: 'que', asArray: true },
   { state: 'users', asArray: true },
   { state: 'comments', asArray: true },
-  { state: 'playingVideo', asArray: false },
-  { state: 'notificationActive', asArray: false },
+  { state: 'playingVideo', asArray: false }
 ];
 
 const PlayerOpts = { height: '390', width: '640', playerVars: { autoplay: 1 } };
@@ -29,8 +28,7 @@ export default class Index extends ReactBaseComponent {
       searchResultNum: '',
       que: [],
       comments: [],
-      users: [],
-      notificationActive: false
+      users: []
     };
 
     this.bind('onChangeText', 'videoSearch', 'setPlayingVideo', 'notification');
@@ -121,15 +119,12 @@ export default class Index extends ReactBaseComponent {
       this.setState({ playingVideo: video })
     }else{
       this.setState({ que: [...que, video] })
-      this.notification('New Video Added!', { body: title, icon: thumbnail.url });
+      // this.notification('New Video Added!', { body: title, icon: thumbnail.url });
     };
   }
 
   onClickDeleteQue(video) {
-    this.setState({
-      que: this.state.que.filter((item) => item.key !== video.key),
-      comments: [...this.state.comments, `delete ${video.title}`]
-    });
+    this.setState({ que: this.state.que.filter((item) => item.key !== video.key) });
   }
 
   onChangeText(type, value) {
