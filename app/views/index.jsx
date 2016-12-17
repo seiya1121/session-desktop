@@ -6,6 +6,7 @@ import { firebaseApp, firebaseDb, base } from '../scripts/firebaseApp.js'
 import { YOUTUBE_API_KEY } from '../../secret.js'
 // import SwipeToRevealOptions from 'react-swipe-to-reveal-options';
 import YouTube from 'react-youtube';
+import YouTubePlayer from 'youtube-player';
 
 const SyncStates = [
   { state: 'que', asArray: true },
@@ -67,6 +68,7 @@ export default class Index extends ReactBaseComponent {
 
   controlPlayer(status){
     console.log(status)
+    YouTube
     switch (status) {
       case YouTube.PlayerState.ENDED:
         console.log('end');
