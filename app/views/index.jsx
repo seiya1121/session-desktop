@@ -39,7 +39,7 @@ export default class Index extends ReactBaseComponent {
     this.bind('onKeyPressForSearch', 'onKeyPressForComment');
     this.bind('onClickSetQue', 'onClickDeleteQue');
     // For YouTube Player
-    this.bind('onReady', 'onPause', 'onEnd', 'onPlay', 'onStateChange');
+    this.bind('onReady', 'onPause', 'onEnd', 'onPlay', 'onStateChange', 'controlPlayer');
   }
 
   componentWillMount() {
@@ -52,15 +52,37 @@ export default class Index extends ReactBaseComponent {
   componentDidMount(){
     SyncStates.map((obj) => {
       const { state, asArray } = obj;
-      base.syncState( state, { context: this, state, asArray, then: () => console.log('changed') } )
+      base.syncState(state, { context: this, state, asArray })
     });
     base.listenTo('playerStatus',
       {
         context: this,
         asArray: false,
-        then(playerStatus){ console.log('statusChanged') }
+        then(status){
+          this.controlPlayer(status)
+        }
       }
     )
+  }
+
+  controlPlayer(status){
+    console.log(status)
+    switch (status) {
+      case YouTube.PlayerState.ENDED:
+        console.log('end');
+        this.onEnd();
+        break;
+      case YouTube.PlayerState.PLAYING:
+        console.log('playing')
+        this.onPlay(this.state.playingVideo);
+        break;
+      case YouTube.PlayerState.PAUSED:
+        console.log('paused')
+        this.onPause();
+        break;
+      default:
+        return;
+    }
   }
 
   notification(title, option) {
@@ -80,8 +102,8 @@ export default class Index extends ReactBaseComponent {
 
   onStateChange(event) {
     console.log(event.data)
+    console.log(event.target)
     this.setState({ playerStatus: event.data });
-
   }
 
   onPlay(video) {
