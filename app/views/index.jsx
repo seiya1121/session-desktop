@@ -52,6 +52,13 @@ export default class Index extends ReactBaseComponent {
       const { state, asArray } = obj;
       base.syncState(state, { context: this, state, asArray });
     });
+    base.listenTo('comments', {
+      context: this,
+      asArray: true,
+      then(que){
+        this.notification('Add', { body: comments[comments.length - 1] })
+      }
+    })
   }
 
   notification(title, option) {
