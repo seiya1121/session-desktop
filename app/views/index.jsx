@@ -11,7 +11,8 @@ const SyncStates = [
   { state: 'que', asArray: true },
   { state: 'users', asArray: true },
   { state: 'comments', asArray: true },
-  { state: 'playingVideo', asArray: false }
+  { state: 'playingVideo', asArray: false },
+  { state: 'playerStatus', asArray: false }
 ];
 
 const PlayerOpts = { height: '390', width: '640', playerVars: { autoplay: 1 } };
@@ -20,6 +21,7 @@ export default class Index extends ReactBaseComponent {
   constructor(props) {
     super(props);
     this.state = {
+      playerStatus: YouTube.PlayerState.ENDED,
       playingVideo: '',
       searchText: '',
       commentText: '',
@@ -35,7 +37,7 @@ export default class Index extends ReactBaseComponent {
     this.bind('onKeyPressForSearch', 'onKeyPressForComment');
     this.bind('onClickSetQue', 'onClickDeleteQue');
     // For YouTube Player
-    this.bind('onReady', 'onPause', 'onEnd', 'onPlay');
+    this.bind('onReady', 'onPause', 'onEnd', 'onPlay', 'onStateChange');
   }
 
   componentWillMount() {
@@ -50,13 +52,6 @@ export default class Index extends ReactBaseComponent {
       const { state, asArray } = obj;
       base.syncState(state, { context: this, state, asArray });
     });
-    base.listenTo('comments', {
-      context: this,
-      asArray: true,
-      then(que){
-        this.notification('Add', { body: comments[comments.length - 1] })
-      }
-    })
   }
 
   notification(title, option) {
@@ -72,6 +67,10 @@ export default class Index extends ReactBaseComponent {
       que: this.state.que.filter((item) => item.key !== video.key),
       comments: [...this.state.comments, `play ${video.title}`]
     });
+  }
+
+  onStateChange(event) {
+    this.setState(playingVideo: event.data);
   }
 
   onPlay(video) {
@@ -253,6 +252,7 @@ export default class Index extends ReactBaseComponent {
                 onPlay={() => this.onPlay(this.state.playingVideo)}
                 onPause={this.onPause}
                 onEnd={this.onEnd}
+                onStateChange={this.onStateChange}
               />
               <ul className="list-group">
                 <input
