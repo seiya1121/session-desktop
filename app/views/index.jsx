@@ -17,6 +17,8 @@ const SyncStates = [
 
 const PlayerOpts = { height: '390', width: '640', playerVars: { autoplay: 1 } };
 
+console.log(YouTube.PlayerState.ENDED)
+
 export default class Index extends ReactBaseComponent {
   constructor(props) {
     super(props);
@@ -70,7 +72,8 @@ export default class Index extends ReactBaseComponent {
   }
 
   onStateChange(event) {
-    this.setState(playingVideo: event.data);
+    console.log(event.data)
+    this.setState({ playerStatus: event.data });
   }
 
   onPlay(video) {
@@ -81,7 +84,7 @@ export default class Index extends ReactBaseComponent {
     if (this.state.que.length > 0) {
       this.setPlayingVideo(this.state.que[0]);
     } else {
-      this.setState({ playingVideo: '' })
+      this.setState({ playingVideo: '' });
     }
   }
 
