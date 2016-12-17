@@ -52,8 +52,15 @@ export default class Index extends ReactBaseComponent {
   componentDidMount(){
     SyncStates.map((obj) => {
       const { state, asArray } = obj;
-      base.syncState(state, { context: this, state, asArray });
+      base.syncState( state, { context: this, state, asArray, then: () => console.log('changed') } )
     });
+    base.listenTo('playerStatus',
+      {
+        context: this,
+        asArray: false,
+        then(playerStatus){ console.log('statusChanged') }
+      }
+    )
   }
 
   notification(title, option) {
@@ -74,6 +81,7 @@ export default class Index extends ReactBaseComponent {
   onStateChange(event) {
     console.log(event.data)
     this.setState({ playerStatus: event.data });
+
   }
 
   onPlay(video) {
