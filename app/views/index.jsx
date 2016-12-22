@@ -190,38 +190,14 @@ export default class Index extends ReactBaseComponent {
   render() {
     const headerNode = (
       <header className="toolbar toolbar-header">
-        <div className="toolbar-actions">
-          <div className="btn-group">
-            <button className="btn btn-default btn-large active">
-              <span className="icon icon-to-start"></span>
-            </button>
-            <button className="btn btn-default btn-large">
-              <span className="icon icon-play"></span>
-            </button>
-            <button className="btn btn-default btn-large">
-              <span className="icon icon-pause"></span>
-            </button>
-            <button className="btn btn-default btn-large">
-              <span className="icon icon-to-end"></span>
-            </button>
-          </div>
-
-          <button className="btn btn-default btn-large">
-            <span className="icon icon-note-beamed"></span>
-            Now Playing {this.state.playingVideo.title}
-          </button>
-
-          <button className="btn btn-default btn-large btn-dropdown pull-right">
-            <span className="icon icon-megaphone"></span>
-          </button>
-        </div>
+        Now Playing {this.state.playingVideo.title}
       </header>
     );
 
     const searchResultNode = this.state.searchResult.map((result, i) => (
       <ul key={i} className="list-group" onClick={() => this.onClickSetQue(result)}>
         <li className="list-group-item">
-          <img className="img-circle media-object pull-left" src={result.thumbnail.url} width="32" height="32"></img>
+          <img className="img-circle" src={result.thumbnail.url} width="32" height="32"></img>
           <div className="media-body">
             <strong>{result.title}</strong>
           </div>
@@ -266,8 +242,21 @@ export default class Index extends ReactBaseComponent {
 
     return (
       <div className="window">
+        <div className="sss-youtube-wrapper is-covered">
+          <YouTube
+            videoId={this.state.playingVideo.videoId}
+            className="sss-youtube-player"
+            opts={PlayerOpts}
+            onReady={this.onReady}
+            onPlay={() => this.onPlay(this.state.playingVideo)}
+            onPause={this.onPause}
+            onEnd={this.onEnd}
+            onStateChange={this.onStateChange}
+          />
+        </div>
         {headerNode}
         <div className="window-content">
+
           <div className="pane-group">
             <div className="pane">
               <h5 className="nav-group-title">
@@ -280,15 +269,6 @@ export default class Index extends ReactBaseComponent {
             </div>
 
             <div className="pane">
-              <YouTube
-                videoId={this.state.playingVideo.videoId}
-                opts={PlayerOpts}
-                onReady={this.onReady}
-                onPlay={() => this.onPlay(this.state.playingVideo)}
-                onPause={this.onPause}
-                onEnd={this.onEnd}
-                onStateChange={this.onStateChange}
-              />
               <ul className="list-group">
                 <input
                   className="form-control"
