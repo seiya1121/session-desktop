@@ -239,7 +239,7 @@ export default class Index extends ReactBaseComponent {
     ))
 
     return (
-      <div className="window">
+      <div>
         <div className="sss-youtube-wrapper is-covered">
           <YouTube
             videoId={this.state.playingVideo.videoId}
