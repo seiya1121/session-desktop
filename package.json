@@ -8,13 +8,6 @@
     "start": "electron .",
     "build": "electron-packager . session --platform darwin --arch x64 --version 0.36.0"
   },
-  "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
-  ],
   "babel": {
     "sourceMaps": "inline",
     "presets": [
