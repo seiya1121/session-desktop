@@ -8,6 +8,14 @@ html, body {
   height: 100%;
 }
 
+* {
+  color: #FFF;
+}
+
+input {
+  background: #333;
+}
+
 #root {
   height: 100%;
 }
@@ -21,7 +29,7 @@ html, body {
   height: 100%;
   overflow: hidden;
   position: fixed;
-  z-index: 0;
+  z-index: -10;
 }
 
   .sss-youtube-wrapper:after {
