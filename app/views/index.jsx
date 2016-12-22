@@ -189,8 +189,8 @@ export default class Index extends ReactBaseComponent {
 
   render() {
     const headerNode = (
-      <header className="toolbar toolbar-header">
-        Now Playing {this.state.playingVideo.title}
+      <header className="sss-header">
+        <span className="text-small">Now Playing</span> {this.state.playingVideo.title}
       </header>
     );
 
@@ -217,7 +217,7 @@ export default class Index extends ReactBaseComponent {
             </div>
           </li>
           <div>
-            <span className="icon icon-cancel" onClick={() => this.onClickDeleteQue(video)}></span>
+            <span className="icon icon-cancel" onClick={() => this.onClickDeleteQue(video)}>x</span>
           </div>
         </div>
       )
@@ -225,9 +225,7 @@ export default class Index extends ReactBaseComponent {
 
     const commentsNode = this.state.comments.map((comment, i) => (
       <li key={i}>
-        <div>
-          <p>{comment}</p>
-        </div>
+        {comment}
       </li>
     ))
 
@@ -255,53 +253,51 @@ export default class Index extends ReactBaseComponent {
           />
         </div>
         {headerNode}
-        <div className="window-content">
+        <div className="controlls">
+          <div className="pane comment-box">
+            <ul className="comment-list-group">
+              {commentsNode}
+            </ul>
+            <input
+              className="comment-input"
+              type="text"
+              placeholder="type comment"
+              onChange={(e) => this.onChangeText('commentText', e.target.value)}
+              onKeyPress={this.onKeyPressForComment}
+              value={this.state.commentText}
+            >
+            </input>
+          </div>
 
-          <div className="pane-group">
-            <div className="pane">
-              <h5 className="nav-group-title">
-                <span className="icon icon-music"></span>
-                Up Coming({this.state.que.length} videos}
-              </h5>
-              <ul className="list-group">
-                {queNode}
-              </ul>
-            </div>
+          <div className="pane list-box">
+            <h5 className="nav-group-title">
+              <span className="icon icon-music"></span>
+              Up Coming({this.state.que.length} videos}
+            </h5>
+            <ul className="list-group">
+              {queNode}
+            </ul>
+          </div>
 
-            <div className="pane">
-              <ul className="list-group">
+          <div className="pane">
+            <ul className="list-group">
+              <li className="list-group-header">
+                <span className="icon icon-search"></span>
                 <input
                   className="form-control"
                   type="text"
-                  placeholder="type comment"
-                  onChange={(e) => this.onChangeText('commentText', e.target.value)}
-                  onKeyPress={this.onKeyPressForComment}
-                  value={this.state.commentText}
+                  placeholder="Search for something you want"
+                  onChange={(e) => this.onChangeText('searchText', e.target.value)}
+                  onKeyPress={this.onKeyPressForSearch}
+                  value={this.state.searchText}
                 >
                 </input>
-                {commentsNode}
-              </ul>
-            </div>
-
-            <div className="pane-sm sidebar">
-              <ul className="list-group">
-                <li className="list-group-header">
-                  <span className="icon icon-search"></span>
-                  <input
-                    className="form-control"
-                    type="text"
-                    placeholder="Search for something you want"
-                    onChange={(e) => this.onChangeText('searchText', e.target.value)}
-                    onKeyPress={this.onKeyPressForSearch}
-                    value={this.state.searchText}
-                  >
-                  </input>
-                </li>
-              </ul>
-              <h5 className="nav-group-title">Search Result</h5>
-              {searchResultNode}
-            </div>
+              </li>
+            </ul>
+            <h5 className="nav-group-title">Search Result</h5>
+            {searchResultNode}
           </div>
+
         </div>
       </div>
     );
