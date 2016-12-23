@@ -1,5 +1,3 @@
-'use babel';
-
 import firebase from 'firebase';
 import { FIREBASE_CONFIG } from '../../secret.js';
 import Rebase from 're-base';

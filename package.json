@@ -1,22 +1,11 @@
 {
   "name": "session",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
-  "main": "application.js",
   "scripts": {
     "lint": "eslint",
-    "start": "electron .",
+    "start": "webpack && electron main.js",
     "build": "electron-packager . session --platform darwin --arch x64 --version 0.36.0"
   },
-  "babel": {
-    "sourceMaps": "inline",
-    "presets": [
-      "es2015",
-      "react"
-    ]
-  },
-  "author": "GitHub",
-  "license": "CC0-1.0",
   "peerdependencies": {
     "react": "^15.14.1",
     "react-dom": "^15.4.1"
@@ -28,9 +17,11 @@
     "babel-plugin-transform-react-jsx": "^6.8.0",
     "babel-preset-es2015": "^6.18.0",
     "babel-preset-react": "^6.16.0",
+    "babel-preset-stage-3": "^6.17.0",
     "babel-register": "^6.18.0",
     "electron": "^1.4.1",
     "electron-packager": "^8.3.0",
+    "electron-prebuilt": "^1.4.13",
     "electron-react-devtools": "^0.4.0",
     "eslint": "^2.10.0",
     "eslint-config-airbnb": "^9.0.1",
@@ -38,7 +29,7 @@
     "eslint-loader": "^1.3.0",
     "eslint-plugin-import": "^1.8.1",
     "eslint-plugin-jsx-a11y": "^1.2.0",
-    "eslint-plugin-react": "^6.7.1",
+    "eslint-plugin-react": "^5.0.1",
     "webpack": "^1.13.3"
   },
   "dependencies": {
@@ -51,5 +42,6 @@
     "react-youtube": "^7.3.0",
     "youtube-node": "^1.3.0",
     "youtube-player": "^4.0.2"
-  }
+  },
+  "private": true
 }
