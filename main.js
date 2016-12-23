@@ -1,5 +1,5 @@
-let electron = require('electron');
-let { BrowserWindow, app } = electron;
+const electron = require('electron');
+const { BrowserWindow, app } = electron;
 
 let mainWindow = null;
 

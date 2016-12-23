@@ -1,17 +1,35 @@
 const webpack = require('webpack');
 const path = require('path');
+const JsonpTemplatePlugin = webpack.JsonpTemplatePlugin;
+const FunctionModulePlugin = require('webpack/lib/FunctionModulePlugin');
 const NodeTargetPlugin = require('webpack/lib/node/NodeTargetPlugin');
 const ExternalsPlugin = webpack.ExternalsPlugin;
 
 const DEBUG = !process.argv.includes('--release');
-const app = path.resolve(__dirname, 'app');
 const bundles = path.resolve(__dirname, 'bundles');
+const entries = [{ key: 'index', file: './index.jsx' }];
+const entry = {};
+entries.forEach(e => Object.assign(entry,
+  { [e.key]: [e.file] }
+));
 
-module.exports = {
-  entry: app + '/views/index.jsx',
+const config = {
+  cache: DEBUG,
+  context: `${__dirname}/app/views`,
+  entry,
   output: {
     path: bundles,
-    filename: 'indexBundle.js',
+    filename: '[name].bundle.js',
+    sourceMapFilename: '[name].map',
+  },
+  target: 'atom',
+  resolve: {
+    extensions: ['', '.js', '.jsx', '.json'],
+    root: [
+      `${__dirname}/node_modules`,
+      path.resolve('./app'),
+    ],
+    packageMains: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main'],
   },
   module: {
     preLoaders: [{
@@ -28,14 +46,6 @@ module.exports = {
       { test: /\.json$/, loader: 'json-loader' },
     ],
   },
-  resolve: {
-    extensions: ['', '.js', '.jsx', '.json'],
-    root: [
-      `${__dirname}/node_modules`,
-      path.resolve('./app'),
-    ],
-  },
-
   plugins: [
     new webpack.NoErrorsPlugin(),
     new ExternalsPlugin('commonjs', [
@@ -67,3 +77,18 @@ module.exports = {
   watch: DEBUG,
 
 };
+
+config.target = function renderer(compiler) {
+  compiler.apply(
+    new JsonpTemplatePlugin({
+      path: bundles,
+      filename: 'indexBundle.js',
+    }),
+    new FunctionModulePlugin({
+      path: bundles,
+      filename: 'indexBundle.js',
+    })
+  );
+};
+
+module.exports = config;

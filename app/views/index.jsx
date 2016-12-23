@@ -1,7 +1,8 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import ReactBaseComponent from '../scripts/reactBaseComponent.jsx';
 import { YOUTUBE_API_KEY } from '../../secret.js';
-import { YouTube as Player } from 'react-youtube';
+import * as Player from 'react-youtube';
 import YouTube from 'youtube-node';
 import { base } from '../scripts/firebaseApp.js';
 
@@ -12,13 +13,13 @@ const SyncStates = [
   { state: 'playingVideo', asArray: false },
   { state: 'playerStatus', asArray: false },
 ];
-const PlayerOpts = { height: '390', width: '640', playerVars: { autoplay: 1 } };
+// const PlayerOpts = { height: '390', width: '640', playerVars: { autoplay: 1 } };
 
-export default class Index extends ReactBaseComponent {
+class Index extends ReactBaseComponent {
   constructor(props) {
     super(props);
     this.state = {
-      playerStatus: Player.PlayerState.ENDED,
+      playerStatus: 1,
       playingVideo: '',
       searchText: '',
       commentText: '',
@@ -38,18 +39,16 @@ export default class Index extends ReactBaseComponent {
   }
 
   componentWillMount() {
-    SyncStates.map((obj) => {
+    SyncStates.forEach((obj) => {
       const { state, asArray } = obj;
       base.bindToState(state, { context: this, state, asArray });
-      return true;
     });
   }
 
   componentDidMount() {
-    SyncStates.map((obj) => {
+    SyncStates.forEach((obj) => {
       const { state, asArray } = obj;
       base.syncState(state, { context: this, state, asArray });
-      return true;
     });
     base.listenTo('playerStatus',
       {
@@ -242,16 +241,6 @@ export default class Index extends ReactBaseComponent {
     return (
       <div>
         <div className="sss-youtube-wrapper is-covered">
-          <Player
-            videoId={this.state.playingVideo.videoId}
-            className="sss-youtube-player"
-            opts={PlayerOpts}
-            onReady={this.onReady}
-            onPlay={() => this.onPlay(this.state.playingVideo)}
-            onPause={this.onPause}
-            onEnd={this.onEnd}
-            onStateChange={this.onStateChange}
-          />
         </div>
         {headerNode}
         <div className="controlls">
@@ -304,3 +293,5 @@ export default class Index extends ReactBaseComponent {
     );
   }
 }
+
+ReactDOM.render(<Index />, document.getElementById('root'));
