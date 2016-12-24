@@ -1,2 +1,4 @@
 node_modules
 secret.js
+app/assets/scripts/bundles/*
+app/assets/styles/bundles/*
