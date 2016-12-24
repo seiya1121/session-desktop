@@ -4,7 +4,7 @@
   "main": "main.js",
   "scripts": {
     "lint": "webpack",
-    "start": "webpack && electron .",
+    "start": "electron .",
     "build": "electron-packager . session --platform darwin --arch x64 --version 0.36.0"
   },
   "peerdependencies": {
@@ -22,7 +22,6 @@
     "babel-register": "^6.18.0",
     "electron": "^1.4.1",
     "electron-packager": "^8.3.0",
-    "electron-prebuilt": "^1.4.13",
     "electron-react-devtools": "^0.4.0",
     "eslint": "^2.10.0",
     "eslint-config-airbnb": "^9.0.1",
@@ -31,7 +30,8 @@
     "eslint-plugin-import": "^1.8.1",
     "eslint-plugin-jsx-a11y": "^1.2.0",
     "eslint-plugin-react": "^5.0.1",
-    "webpack": "^1.13.3"
+    "webpack": "^1.13.3",
+    "json-loader": "0.5.4"
   },
   "dependencies": {
     "classnames": "^2.2.5",

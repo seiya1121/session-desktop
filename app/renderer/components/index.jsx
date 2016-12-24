@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ReactBaseComponent from '../scripts/reactBaseComponent.jsx';
-import { YOUTUBE_API_KEY } from '../../secret.js';
-import * as Player from 'react-youtube';
-import YouTube from 'youtube-node';
-import { base } from '../scripts/firebaseApp.js';
+import ReactBaseComponent from './reactBaseComponent.jsx';
+import { YOUTUBE_API_KEY } from '../../../secret.js';
+// import * as Player from 'react-youtube';
+import * as YouTubeNode from 'youtube-node';
+import { base } from '../../assets/scripts/firebaseApp.js';
 
 const SyncStates = [
   { state: 'que', asArray: true },
@@ -61,24 +61,24 @@ class Index extends ReactBaseComponent {
     );
   }
 
-  controlPlayer(status) {
-    console.log(status);
-    switch (status) {
-      case Player.PlayerState.ENDED:
-        console.log('end');
-        this.onEnd();
-        break;
-      case Player.PlayerState.PLAYING:
-        console.log('playing');
-        this.onPlay(this.state.playingVideo);
-        break;
-      case Player.PlayerState.PAUSED:
-        console.log('paused');
-        this.onPause();
-        break;
-      default:
-        return;
-    }
+  controlPlayer() {
+    // console.log(status);
+    // switch (status) {
+    //   case Player.PlayerState.ENDED:
+    //     console.log('end');
+    //     this.onEnd();
+    //     break;
+    //   case Player.PlayerState.PLAYING:
+    //     console.log('playing');
+    //     this.onPlay(this.state.playingVideo);
+    //     break;
+    //   case Player.PlayerState.PAUSED:
+    //     console.log('paused');
+    //     this.onPause();
+    //     break;
+    //   default:
+    //     return;
+    // }
   }
 
   notification(title, option) {
@@ -161,9 +161,9 @@ class Index extends ReactBaseComponent {
   }
 
   videoSearch() {
-    const youTube = new YouTube();
-    youTube.setKey(YOUTUBE_API_KEY);
-    youTube.search(
+    const youTubeNode = new YouTubeNode();
+    youTubeNode.setKey(YOUTUBE_API_KEY);
+    youTubeNode.search(
       this.state.searchText,
       50,
       (error, result) => {

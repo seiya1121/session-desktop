@@ -7,7 +7,9 @@ const ExternalsPlugin = webpack.ExternalsPlugin;
 
 const DEBUG = !process.argv.includes('--release');
 const bundles = path.resolve(__dirname, 'bundles');
-const entries = [{ key: 'index', file: './index.jsx' }];
+const entries = [
+  { key: 'index', file: './renderer/components/index.jsx' },
+];
 const entry = {};
 entries.forEach(e => Object.assign(entry,
   { [e.key]: [e.file] }
@@ -15,14 +17,16 @@ entries.forEach(e => Object.assign(entry,
 
 const config = {
   cache: DEBUG,
-  context: `${__dirname}/app/views`,
+  context: `${__dirname}/app`,
   entry,
   output: {
     path: bundles,
     filename: '[name].bundle.js',
     sourceMapFilename: '[name].map',
   },
-  target: 'atom',
+
+  target: 'electron',
+
   resolve: {
     extensions: ['', '.js', '.jsx', '.json'],
     root: [
@@ -31,6 +35,7 @@ const config = {
     ],
     packageMains: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main'],
   },
+
   module: {
     preLoaders: [{
       test: /\.jsx$|\.js$/,
@@ -42,10 +47,17 @@ const config = {
         test: /\.jsx$|\.js$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
+        query: {
+          presets: ['es2015', 'react'],
+        },
       },
-      { test: /\.json$/, loader: 'json-loader' },
+      {
+        test: /\.json$/,
+        loader: 'json-loader',
+      },
     ],
   },
+
   plugins: [
     new webpack.NoErrorsPlugin(),
     new ExternalsPlugin('commonjs', [
