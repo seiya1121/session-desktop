@@ -2,9 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactBaseComponent from './reactBaseComponent.jsx';
 import { YOUTUBE_API_KEY } from '../../../secret.js';
-// import * as Player from 'react-youtube';
-import * as YouTubeNode from 'youtube-node';
+import Youtube from 'react-youtube';
 import { base } from '../../assets/scripts/firebaseApp.js';
+import YouTubeNode from 'youtube-node';
 
 const SyncStates = [
   { state: 'que', asArray: true },
@@ -13,7 +13,7 @@ const SyncStates = [
   { state: 'playingVideo', asArray: false },
   { state: 'playerStatus', asArray: false },
 ];
-// const PlayerOpts = { height: '390', width: '640', playerVars: { autoplay: 1 } };
+const PlayerOpts = { height: '390', width: '640', playerVars: { autoplay: 1 } };
 
 class Index extends ReactBaseComponent {
   constructor(props) {
@@ -62,31 +62,31 @@ class Index extends ReactBaseComponent {
   }
 
   controlPlayer() {
-    // console.log(status);
-    // switch (status) {
-    //   case Player.PlayerState.ENDED:
-    //     console.log('end');
-    //     this.onEnd();
-    //     break;
-    //   case Player.PlayerState.PLAYING:
-    //     console.log('playing');
-    //     this.onPlay(this.state.playingVideo);
-    //     break;
-    //   case Player.PlayerState.PAUSED:
-    //     console.log('paused');
-    //     this.onPause();
-    //     break;
-    //   default:
-    //     return;
-    // }
+    console.log(status);
+    switch (status) {
+      case Youtube.PlayerState.ENDED:
+        console.log('end');
+        this.onEnd();
+        break;
+      case Youtube.PlayerState.PLAYING:
+        console.log('playing');
+        this.onPlay(this.state.playingVideo);
+        break;
+      case Youtube.PlayerState.PAUSED:
+        console.log('paused');
+        this.onPause();
+        break;
+      default:
+        return;
+    }
   }
 
   notification(title, option) {
-    const notification = new Notification();
-    notification(
+    const notification = new Notification(
       `${title} (${this.state.que.length + 1} remained)`,
       { body: option.body, icon: option.icon, silent: true }
     );
+    return notification;
   }
 
   setPlayingVideo(video) {
@@ -241,6 +241,16 @@ class Index extends ReactBaseComponent {
     return (
       <div>
         <div className="sss-youtube-wrapper is-covered">
+          <Youtube
+            videoId={this.state.playingVideo.videoId}
+            className="sss-youtube-player"
+            opts={PlayerOpts}
+            onReady={this.onReady}
+            onPlay={() => this.onPlay(this.state.playingVideo)}
+            onPause={this.onPause}
+            onEnd={this.onEnd}
+            onStateChange={this.onStateChange}
+          />
         </div>
         {headerNode}
         <div className="controlls">
