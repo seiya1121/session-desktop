@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 const NodeTargetPlugin = require('webpack/lib/node/NodeTargetPlugin');
 const ExternalsPlugin = webpack.ExternalsPlugin;
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const DEBUG = !process.argv.includes('--release');
 const bundles = (assetType) => path.resolve(__dirname, `app/assets/${assetType}/bundles`);
@@ -104,20 +105,23 @@ const config = [
     entry: entryForStyles,
     output: {
       path: bundles('styles'),
-      filename: '[name].bundle.css',
+      filename: '[name].bundle.js',
     },
     module: {
       loaders: [
         {
           test: /\.css$/,
-          loader: 'style-loader!css-loader',
+          loader: ExtractTextPlugin.extract('style-loader', 'css-loader'),
         },
         {
           test: /\.scss$/,
-          loader: 'style-loader!css-loader!sass-loader',
+          loader: ExtractTextPlugin.extract('style-loader', 'css-loader!sass-loader'),
         },
       ],
     },
+    plugins: [
+      new ExtractTextPlugin('css/[name].css'),
+    ],
     watch: DEBUG,
   },
 ];
