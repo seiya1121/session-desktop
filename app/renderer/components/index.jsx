@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ReactBaseComponent from './reactBaseComponent.jsx';
+import ReactBaseComponent from './reactBaseComponent';
 import { YOUTUBE_API_KEY } from '../../../secret.js';
 import Youtube from 'react-youtube';
-import { base } from '../../assets/scripts/firebaseApp.js';
+import { base } from '../../assets/scripts/firebaseApp';
+import { Duration } from '../../assets/scripts/duration';
 import YouTubeNode from 'youtube-node';
 import ReactPlayer from 'react-player';
 
@@ -15,12 +16,18 @@ const SyncStates = [
   { state: 'isPlaying', asArray: false },
 ];
 // const PlayerOpts = { height: '390', width: '640', playerVars: { autoplay: 1 } };
-
+const Url = (videoId) => `https://www.youtube.com/watch?v=${videoId}`;
 class Index extends ReactBaseComponent {
   constructor(props) {
     super(props);
     this.state = {
-      isPlaying: false,
+      url: null,
+      playing: true,
+      volume: 0.8,
+      played: 0,
+      loaded: 0,
+      duration: 0,
+      playbackRate: 1.0,
       playingVideo: '',
       searchText: '',
       commentText: '',
@@ -36,7 +43,7 @@ class Index extends ReactBaseComponent {
     this.bind('onKeyPressForSearch', 'onKeyPressForComment');
     this.bind('onClickSetQue', 'onClickDeleteQue');
     // For YouTube Player
-    this.bind('onReady', 'onPause', 'onEnd', 'onPlay', 'onStateChange', 'controlPlayer');
+    this.bind('onEnded', 'onPlay', 'onStateChange', 'controlPlayer');
   }
 
   componentWillMount() {
@@ -62,12 +69,66 @@ class Index extends ReactBaseComponent {
     );
   }
 
+  load(url) {
+    this.setState({ url, played: 0, loaded: 0 });
+  }
+
+  playPause() {
+    this.setState({ playing: !this.state.playing });
+  }
+  stop() {
+    this.setState({ url: null, playing: false });
+  }
+  setVolume(e) {
+    this.setState({ volume: parseFloat(e.target.value) });
+  }
+  setPlaybackRate(e) {
+    console.log(parseFloat(e.target.value));
+    this.setState({ playbackRate: parseFloat(e.target.value) });
+  }
+
+  onSeekMouseDown() {
+    this.setState({ seeking: true });
+  }
+  onSeekChange(e) {
+    this.setState({ played: parseFloat(e.target.value) });
+  }
+  onSeekMouseUp(e) {
+    this.setState({ seeking: false });
+    this.player.seekTo(parseFloat(e.target.value));
+  }
+  onProgress(state) {
+    // We only want to update time slider if we are not currently seeking
+    if (!this.state.seeking) {
+      this.setState(state);
+    }
+  }
+
+  onConfigSubmit() {
+    let config;
+    try {
+      config = JSON.parse(this.configInput.value);
+    } catch (error) {
+      config = {};
+      console.error('Error setting config:', error);
+    }
+    this.setState(config);
+  }
+
+  renderLoadButton(url, label) {
+    return (
+      <button onClick={() => this.load(url)}>
+        {label}
+      </button>
+    );
+  }
+
   controlPlayer() {
     console.log(status);
     switch (status) {
       case Youtube.PlayerState.ENDED:
         console.log('end');
-        this.onEnd();
+        this.onEnded();
         break;
       case Youtube.PlayerState.PLAYING:
         console.log('playing');
@@ -108,20 +169,12 @@ class Index extends ReactBaseComponent {
     this.notification('Now Playing♪', { body: video.title, icon: video.thumbnail.url });
   }
 
-  onEnd() {
+  onEnded() {
     if (this.state.que.length > 0) {
       this.setPlayingVideo(this.state.que[0]);
     } else {
       this.setState({ playingVideo: '' });
     }
-  }
-
-  onPause() {
-    console.log(`pausing...${this.state.playingVideo.title}`);
-  }
-
-  onReady() {
-    console.log(`ready...${this.state.playingVideo.title}`);
   }
 
   onClickSetPlayingVideo(video) {
@@ -187,6 +240,9 @@ class Index extends ReactBaseComponent {
   }
 
   render() {
+    const { url, playing, volume, played, loaded, duration, playbackRate, soundcloudConfig,
+      vimeoConfig, youtubeConfig, fileConfig } = this.state;
+
     const headerNode = (
       <header className="sss-header">
         <span className="text-small">Now Playing</span> {this.state.playingVideo.title}
@@ -243,10 +299,104 @@ class Index extends ReactBaseComponent {
       <div>
         <div className="sss-youtube-wrapper is-covered">
           <ReactPlayer
-            url={`https://www.youtube.com/watch?v=${this.state.playingVideo.videoId}`}
-            playing
+            ref={(player) => { this.player = player; }}
+            className="react-player"
+            width={480}
+            height={270}
+            url={url}
+            playing={playing}
+            playbackRate={playbackRate}
+            volume={volume}
+            soundcloudConfig={soundcloudConfig}
+            vimeoConfig={vimeoConfig}
+            youtubeConfig={youtubeConfig}
+            fileConfig={fileConfig}
+            onReady={() => console.log('onReady')}
+            onStart={() => console.log('onStart')}
+            onPlay={() => this.setState({ playing: true })}
+            onPause={() => this.setState({ playing: false })}
+            onBuffer={() => console.log('onBuffer')}
+            onEnded={() => this.setState({ playing: false })}
+            onError={e => console.log('onError', e)}
+            onProgress={this.onProgress}
+            onDuration={(d) => this.setState({ duration: d })}
           />
         </div>
+        <table><tbody>
+          <tr>
+            <th>Controls</th>
+            <td>
+              <button onClick={this.stop}>Stop</button>
+              <button onClick={this.playPause}>{playing ? 'Pause' : 'Play'}</button>
+              <button onClick={this.onClickFullscreen}>Fullscreen</button>
+              <button onClick={this.setPlaybackRate} value={1}>1</button>
+              <button onClick={this.setPlaybackRate} value={1.5}>1.5</button>
+              <button onClick={this.setPlaybackRate} value={2}>2</button>
+            </td>
+          </tr>
+          <tr>
+            <th>Seek</th>
+            <td>
+              <input
+                type="range" min={0} max={1} step="any"
+                value={played}
+                onMouseDown={this.onSeekMouseDown}
+                onChange={this.onSeekChange}
+                onMouseUp={this.onSeekMouseUp}
+              />
+            </td>
+          </tr>
+          <tr>
+            <th>Volume</th>
+            <td>
+              <input
+                type="range" min={0} max={1} step="any" value={volume} onChange={this.setVolume}
+              />
+            </td>
+          </tr>
+          <tr>
+            <th>Played</th>
+            <td><progress max={1} value={played} /></td>
+          </tr>
+          <tr>
+            <th>Loaded</th>
+            <td><progress max={1} value={loaded} /></td>
+          </tr>
+        </tbody></table>
+        <table><tbody>
+          <tr>
+            <th>url</th>
+            <td className={!url ? 'faded' : ''}>{url || 'null'}</td>
+          </tr>
+          <tr>
+            <th>playing</th>
+            <td>{playing ? 'true' : 'false'}</td>
+          </tr>
+          <tr>
+            <th>volume</th>
+            <td>{volume.toFixed(3)}</td>
+          </tr>
+          <tr>
+            <th>played</th>
+            <td>{played.toFixed(3)}</td>
+          </tr>
+          <tr>
+            <th>loaded</th>
+            <td>{loaded.toFixed(3)}</td>
+          </tr>
+          <tr>
+            <th>duration</th>
+            <td><Duration seconds={duration} /></td>
+          </tr>
+          <tr>
+            <th>elapsed</th>
+            <td><Duration seconds={duration * played} /></td>
+          </tr>
+          <tr>
+            <th>remaining</th>
+            <td><Duration seconds={duration * (1 - played)} /></td>
+          </tr>
+        </tbody></table>
         {headerNode}
         <div className="controlls">
           <div className="pane comment-box">
