@@ -10,6 +10,7 @@ const format = (seconds) => {
   return (hh) ? `${hh}:${pad(mm)}:${ss}` : `${mm}:${ss}`;
 };
 
+console.log('duration');
 const Duration = (className, seconds) => (
   <time dateTime={`P${Math.round(seconds)}S`} className={className}>
     {format(seconds)}
