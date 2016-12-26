@@ -5,21 +5,22 @@ import { YOUTUBE_API_KEY } from '../../../secret.js';
 import Youtube from 'react-youtube';
 import { base } from '../../assets/scripts/firebaseApp.js';
 import YouTubeNode from 'youtube-node';
+import ReactPlayer from 'react-player';
 
 const SyncStates = [
   { state: 'que', asArray: true },
   { state: 'users', asArray: true },
   { state: 'comments', asArray: true },
   { state: 'playingVideo', asArray: false },
-  { state: 'playerStatus', asArray: false },
+  { state: 'isPlaying', asArray: false },
 ];
-const PlayerOpts = { height: '390', width: '640', playerVars: { autoplay: 1 } };
+// const PlayerOpts = { height: '390', width: '640', playerVars: { autoplay: 1 } };
 
 class Index extends ReactBaseComponent {
   constructor(props) {
     super(props);
     this.state = {
-      playerStatus: 1,
+      isPlaying: false,
       playingVideo: '',
       searchText: '',
       commentText: '',
@@ -241,15 +242,9 @@ class Index extends ReactBaseComponent {
     return (
       <div>
         <div className="sss-youtube-wrapper is-covered">
-          <Youtube
-            videoId={this.state.playingVideo.videoId}
-            className="sss-youtube-player"
-            opts={PlayerOpts}
-            onReady={this.onReady}
-            onPlay={() => this.onPlay(this.state.playingVideo)}
-            onPause={this.onPause}
-            onEnd={this.onEnd}
-            onStateChange={this.onStateChange}
+          <ReactPlayer
+            url={`https://www.youtube.com/watch?v=${this.state.playingVideo.videoId}`}
+            playing
           />
         </div>
         {headerNode}
