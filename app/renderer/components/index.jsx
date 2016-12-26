@@ -11,7 +11,8 @@ const SyncStates = [
   { state: 'users', asArray: true },
   { state: 'comments', asArray: true },
   { state: 'playingVideo', asArray: false },
-  { state: 'isPlaying', asArray: false },
+  // { state: 'playing', asArray: false },
+  // { state: 'played', asArray: false },
 ];
 
 const youtubeUrl = (videoId) => `https://www.youtube.com/watch?v=${videoId}`;
