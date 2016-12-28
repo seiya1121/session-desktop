@@ -5,7 +5,7 @@ const ExternalsPlugin = webpack.ExternalsPlugin;
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const DEBUG = !process.argv.includes('--release');
-const bundles = (assetType) => path.resolve(__dirname, `app/assets/${assetType}/bundles`);
+const distPath = (assetType) => path.resolve(__dirname, `dist/${assetType}`);
 
 const Scripts = [
   { key: 'index', file: './index.jsx' },
@@ -30,7 +30,7 @@ const config = [
     context: `${__dirname}/app/renderer/components`,
     entry: entryForScripts,
     output: {
-      path: bundles('scripts'),
+      path: distPath('scripts'),
       filename: '[name].bundle.js',
       sourceMapFilename: '[name].map',
     },
@@ -104,7 +104,7 @@ const config = [
     context: `${__dirname}/app/assets/styles`,
     entry: entryForStyles,
     output: {
-      path: bundles('styles'),
+      path: distPath('styles'),
       filename: '[name].bundle.js',
     },
     module: {

@@ -1,4 +1,4 @@
 node_modules
 secret.js
-app/assets/scripts/bundles/*
-app/assets/styles/bundles/*
+firebase-debug.log
+dist
