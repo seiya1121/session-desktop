@@ -27,7 +27,7 @@ const config = [
   // jsx関連
   {
     cache: DEBUG,
-    context: `${__dirname}/app/renderer/components`,
+    context: `${__dirname}/app/scripts/components`,
     entry: entryForScripts,
     output: {
       path: distPath('scripts'),
@@ -101,7 +101,7 @@ const config = [
   // Style関連
   {
     cache: DEBUG,
-    context: `${__dirname}/app/assets/styles`,
+    context: `${__dirname}/app/styles`,
     entry: entryForStyles,
     output: {
       path: distPath('styles'),

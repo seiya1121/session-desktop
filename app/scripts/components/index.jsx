@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactBaseComponent from './reactBaseComponent';
 import { YOUTUBE_API_KEY } from '../../../secret';
-import { base } from '../../assets/scripts/firebaseApp';
+import { base } from '../firebaseApp';
 import YouTubeNode from 'youtube-node';
 import ReactPlayer from 'react-player';
 

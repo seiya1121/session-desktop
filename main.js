@@ -15,7 +15,7 @@ app.on('ready', () => {
     height: 600,
     titleBarStyle: 'hidden',
   });
-  mainWindow.loadURL(`file://${__dirname}/app/renderer/index.html`);
+  mainWindow.loadURL(`file://${__dirname}/app/index.html`);
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
