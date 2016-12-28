@@ -1,4 +1,4 @@
 node_modules
-secret.js
+app/scripts/secret.js
 firebase-debug.log
-dist
+app/dist

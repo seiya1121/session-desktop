@@ -5,7 +5,7 @@ const ExternalsPlugin = webpack.ExternalsPlugin;
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const DEBUG = !process.argv.includes('--release');
-const distPath = (assetType) => path.resolve(__dirname, `dist/${assetType}`);
+const distPath = (assetType) => path.resolve(__dirname, `app/dist/${assetType}`);
 
 const Scripts = [
   { key: 'index', file: './index.jsx' },
