@@ -8,7 +8,7 @@ const DEBUG = !process.argv.includes('--release');
 const distPath = (assetType) => path.resolve(__dirname, `app/dist/${assetType}`);
 
 const Scripts = [
-  { key: 'index', file: './index.jsx' },
+  { key: 'app', file: './app.jsx' },
 ];
 
 const Styles = [

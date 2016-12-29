@@ -12,22 +12,22 @@ const SyncStates = [
   { state: 'comments', asArray: true },
   { state: 'playingVideo', asArray: false },
   { state: 'playing', asArray: false },
-  { state: 'played', asArray: false },
+  { state: 'startTime', asArray: false },
 ];
 
 const youtubeUrl = (videoId) => `https://www.youtube.com/watch?v=${videoId}`;
 
-class Index extends ReactBaseComponent {
+class App extends ReactBaseComponent {
   constructor(props) {
     super(props);
     this.state = {
       playing: true,
       volume: 0.8,
+      startTime: 0,
       played: 0,
       loaded: 0,
       duration: 0,
       seeking: false,
-      playbackRate: 1.0,
       playingVideo: '',
       searchText: '',
       commentText: '',
@@ -60,11 +60,20 @@ class Index extends ReactBaseComponent {
       const { state, asArray } = obj;
       base.syncState(state, { context: this, state, asArray });
     });
+    base.listenTo('startTime', {
+      context: this,
+      asArray: false,
+      then(startTime) {
+        this.setState({ played: startTime, seeking: false });
+        this.player.seekTo(startTime);
+      },
+    });
   }
 
   playPause() {
-    this.setState({ playing: !this.state.playing });
+    this.setState({ playing: !this.state.playing, startTime: this.state.played });
   }
+
   stop() {
     if (this.state.que.length > 0) {
       this.setPlayingVideo(this.state.que[0]);
@@ -72,6 +81,7 @@ class Index extends ReactBaseComponent {
       this.setState({ playing: false, playingVideo: '' });
     }
   }
+
   setVolume(e) {
     this.setState({ volume: parseFloat(e.target.value) });
   }
@@ -81,7 +91,7 @@ class Index extends ReactBaseComponent {
   }
 
   onSeekMouseUp(e) {
-    this.setState({ seeking: false });
+    this.setState({ seeking: false, startTime: parseFloat(e.target.value) });
     this.player.seekTo(parseFloat(e.target.value));
   }
 
@@ -90,9 +100,7 @@ class Index extends ReactBaseComponent {
   }
 
   onProgress(state) {
-    if (!this.state.seeking) {
-      this.setState(state);
-    }
+    if (!this.state.seeking) { this.setState(state); }
   }
 
   onConfigSubmit() {
@@ -116,7 +124,9 @@ class Index extends ReactBaseComponent {
 
   setPlayingVideo(video) {
     this.setState({
+      playing: true,
       playingVideo: video,
+      startTime: 0,
       que: this.state.que.filter((item) => item.key !== video.key),
       comments: [...this.state.comments, `play ${video.title}`],
     });
@@ -131,7 +141,7 @@ class Index extends ReactBaseComponent {
     if (this.state.que.length > 0) {
       this.setPlayingVideo(this.state.que[0]);
     } else {
-      this.setState({ playingVideo: '' });
+      this.setState({ playingVideo: '', startTime: 0 });
     }
   }
 
@@ -202,7 +212,7 @@ class Index extends ReactBaseComponent {
   }
 
   render() {
-    const { playing, volume, played, loaded, playbackRate } = this.state;
+    const { playing, volume, played, loaded } = this.state;
     const { soundcloudConfig, vimeoConfig, youtubeConfig, fileConfig } = this.state;
     const { playingVideo } = this.state;
 
@@ -268,7 +278,6 @@ class Index extends ReactBaseComponent {
             height={270}
             url={youtubeUrl(playingVideo.videoId)}
             playing={playing}
-            playbackRate={playbackRate}
             volume={volume}
             soundcloudConfig={soundcloudConfig}
             vimeoConfig={vimeoConfig}
@@ -323,10 +332,6 @@ class Index extends ReactBaseComponent {
           </tr>
         </tbody></table>
         <table><tbody>
-          <tr>
-            <th>volume</th>
-            <td>{volume.toFixed(3)}</td>
-          </tr>
           <tr>
             <th>played</th>
             <td>{played.toFixed(3)}</td>
@@ -388,4 +393,4 @@ class Index extends ReactBaseComponent {
   }
 }
 
-ReactDOM.render(<Index />, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('root'));
