@@ -65,7 +65,7 @@ class App extends ReactBaseComponent {
     base.listenTo('startTime', {
       context: this,
       asArray: false,
-      then(startTime) { this.onSeekChange(startTime); },
+      then(startTime) { this.setState({ played: startTime }); },
     });
   }
 
@@ -75,6 +75,7 @@ class App extends ReactBaseComponent {
       startTime: this.state.played,
     });
   }
+
   stop() {
     if (this.state.que.length > 0) {
       this.setPlayingVideo(this.state.que[0]);
@@ -82,6 +83,7 @@ class App extends ReactBaseComponent {
       this.setState({ playing: false, playingVideo: '' });
     }
   }
+
   setVolume(e) {
     this.setState({ volume: parseFloat(e.target.value) });
   }
@@ -96,7 +98,9 @@ class App extends ReactBaseComponent {
   }
 
   onSeekChange(e) {
-    this.setState({ played: parseFloat(e.target.value) });
+    this.setState({
+      startTime: parseFloat(e.target.value),
+    });
   }
 
   onProgress(state) {
