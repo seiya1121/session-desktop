@@ -132,9 +132,9 @@ class App extends ReactBaseComponent {
     });
   }
 
-  onPlay(video) {
+  onPlay() {
     this.setState({ playing: true });
-    this.notification('Now Playing♪', { body: video.title, icon: video.thumbnail.url });
+    // this.notification('Now Playing♪', { body: video.title, icon: video.thumbnail.url });
   }
 
   onEnded() {
