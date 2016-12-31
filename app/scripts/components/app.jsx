@@ -289,7 +289,7 @@ class App extends ReactBaseComponent {
             onPlay={() => this.onPlay(playingVideo)}
             onPause={() => this.setState({ playing: false })}
             onBuffer={() => console.log('onBuffer')}
-            onEnded={() => this.setState({ playing: false })}
+            onEnded={this.onEnded}
             onError={(e) => console.log('onError', e)}
             onProgress={this.onProgress}
             onDuration={(duration) => this.setState({ duration })}
