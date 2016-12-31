@@ -68,6 +68,15 @@ class App extends ReactBaseComponent {
         this.player.seekTo(startTime);
       },
     });
+    base.listenTo('que', {
+      context: this,
+      asArray: false,
+      then(que) {
+        const addedVideo = que.pop();
+        console.log(addedVideo);
+        this.notification('Added♪', { body: addedVideo.title, icon: addedVideo.thumbnail.url });
+      },
+    });
   }
 
   playPause() {
@@ -132,9 +141,9 @@ class App extends ReactBaseComponent {
     });
   }
 
-  onPlay() {
+  onPlay(video) {
     this.setState({ playing: true });
-    // this.notification('Now Playing♪', { body: video.title, icon: video.thumbnail.url });
+    this.notification('Now Playing♪', { body: video.title, icon: video.thumbnail.url });
   }
 
   onEnded() {
@@ -146,7 +155,6 @@ class App extends ReactBaseComponent {
   }
 
   onReady() {
-    console.log('onReady');
     this.setState({ playing: true });
   }
 
@@ -170,12 +178,10 @@ class App extends ReactBaseComponent {
 
   onClickSetQue(video) {
     const { que } = this.state;
-    const { title, thumbnail } = video;
     if (que.length === 0 && this.state.playingVideo === '') {
       this.setState({ playingVideo: video });
     } else {
       this.setState({ que: [...que, video] });
-      this.notification('New Video Added!', { body: title, icon: thumbnail.url });
     }
   }
 
