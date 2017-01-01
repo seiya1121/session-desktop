@@ -17,6 +17,14 @@ const SyncStates = [
 
 const youtubeUrl = (videoId) => `https://www.youtube.com/watch?v=${videoId}`;
 
+const authDataCallback = (user) => {
+  if (user) {
+    console.log(`User: ${user.uid} is logged in with ${user.providerId}`);
+  } else {
+    console.log('User is logged out');
+  }
+};
+
 class App extends ReactBaseComponent {
   constructor(props) {
     super(props);
@@ -53,6 +61,7 @@ class App extends ReactBaseComponent {
       const { state, asArray } = obj;
       base.bindToState(state, { context: this, state, asArray });
     });
+    base.onAuth(authDataCallback);
   }
 
   componentDidMount() {
@@ -73,7 +82,6 @@ class App extends ReactBaseComponent {
       asArray: false,
       then(que) {
         const addedVideo = que.pop();
-        console.log(addedVideo);
         this.notification('Added♪', { body: addedVideo.title, icon: addedVideo.thumbnail.url });
       },
     });
