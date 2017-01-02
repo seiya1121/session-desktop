@@ -81,8 +81,10 @@ class App extends ReactBaseComponent {
       context: this,
       asArray: false,
       then(que) {
-        const addedVideo = que.pop();
-        this.notification('Added♪', { body: addedVideo.title, icon: addedVideo.thumbnail.url });
+        if (typeof que !== 'object') {
+          const addedVideo = que.pop();
+          this.notification('Added♪', { body: addedVideo.title, icon: addedVideo.thumbnail.url });
+        }
       },
     });
   }
