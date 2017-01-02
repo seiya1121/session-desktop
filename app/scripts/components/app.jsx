@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactBaseComponent from './reactBaseComponent';
 import { YOUTUBE_API_KEY } from '../secret';
-import { base } from '../firebaseApp';
+import { base, firebaseApp } from '../firebaseApp';
 import YouTubeNode from 'youtube-node';
 import ReactPlayer from 'react-player';
 
@@ -39,9 +39,10 @@ class App extends ReactBaseComponent {
       playingVideo: '',
       searchText: '',
       commentText: '',
-      userName: '',
       searchResult: [],
       searchResultNum: '',
+      userName: '',
+      password: '',
       que: [],
       comments: [],
       users: [],
@@ -49,7 +50,7 @@ class App extends ReactBaseComponent {
 
     this.bind('onChangeText', 'videoSearch', 'setPlayingVideo', 'notification');
     this.bind('onKeyPressForSearch', 'onKeyPressForComment');
-    this.bind('onClickSetQue', 'onClickDeleteQue');
+    this.bind('onClickSetQue', 'onClickDeleteQue', 'onClickCreateUser');
     // For YouTube Player
     this.bind('playPause', 'stop', 'setVolume',
     'onSeekMouseDown', 'onSeekMouseUp', 'onSeekChange', 'onConfigSubmit');
@@ -86,6 +87,15 @@ class App extends ReactBaseComponent {
           this.notification('Added♪', { body: addedVideo.title, icon: addedVideo.thumbnail.url });
         }
       },
+    });
+  }
+
+  onClickCreateUser() {
+    const { userName, password } = this.state;
+    firebaseApp.auth().createUserWithEmailAndPassword(userName, password)
+    .catch((error) => {
+      console.log(error.code);
+      console.log(error.message);
     });
   }
 
@@ -287,6 +297,27 @@ class App extends ReactBaseComponent {
 
     return (
       <div>
+        <br />
+        <br />
+        <div>
+          <input
+            className="comment-input"
+            type="text"
+            placeholder="user name"
+            onChange={(e) => this.onChangeText('userName', e.target.value)}
+            value={this.state.userName}
+          >
+          </input>
+          <input
+            className="comment-input"
+            type="text"
+            placeholder="password"
+            onChange={(e) => this.onChangeText('password', e.target.value)}
+            value={this.state.password}
+          >
+          </input>
+          <button onClick={this.onClickCreateUser}>Create User</button>
+        </div>
         <div className="sss-youtube-wrapper is-covered">
           <ReactPlayer
             ref={(player) => { this.player = player; }}
