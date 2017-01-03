@@ -21,6 +21,10 @@ const videoObject = (video, userName) => Object.assign({}, video, { userName });
 const defaultCurrentUser = Object.assign(
   {}, { name: getAnimalName(), photoURL: '', isLogin: false }
 );
+const PlayingVideoStatusText = {
+  playing: 'Now Playing',
+  noVideos: "There're no videos to play.",
+};
 
 class App extends ReactBaseComponent {
   constructor(props) {
@@ -39,9 +43,10 @@ class App extends ReactBaseComponent {
       searchResult: [],
       searchResultNum: '',
       displayName: '',
-      defaultDisplayName: '',
-      mailAddress: '',
-      password: '',
+      mailAddressForSignIn: '',
+      mailAddressForSignUp: '',
+      passwordForSignIn: '',
+      passwordForSignUp: '',
       que: [],
       comments: [],
       users: [],
@@ -50,11 +55,21 @@ class App extends ReactBaseComponent {
 
     this.bind('onChangeText', 'videoSearch', 'setPlayingVideo', 'notification');
     this.bind('onKeyPressForSearch', 'onKeyPressForComment');
-    this.bind('onClickSetQue', 'onClickDeleteQue', 'onClickSignUp', 'onClickSignOut');
+    this.bind('onClickSetQue', 'onClickDeleteQue');
+    this.bind('onClickSignUp', 'onClickSignOut', 'onClickSignIn');
     // For YouTube Player
     this.bind('playPause', 'stop', 'setVolume',
     'onSeekMouseDown', 'onSeekMouseUp', 'onSeekChange', 'onConfigSubmit');
     this.bind('onEnded', 'onPlay', 'onProgress', 'onReady');
+  }
+
+  setLoginUser(user) {
+    const { displayName, photoURL } = user;
+    this.setState({
+      currentUser: Object.assign({}, this.state.currentUser,
+        { name: displayName, photoURL, isLogin: true }
+      ),
+    });
   }
 
   componentWillMount() {
@@ -65,14 +80,7 @@ class App extends ReactBaseComponent {
     firebaseAuth.onAuthStateChanged((user) => {
       if (user) {
         // User is signed in.
-        const { displayName, photoURL } = user;
-        this.setState({
-          currentUser: Object.assign(
-            {}, this.state.currentUser, { name: displayName, photoURL, isLogin: true }
-          ),
-        });
-      } else {
-        // // No user is signed in.
+        this.setLoginUser(user);
       }
     });
   }
@@ -103,11 +111,19 @@ class App extends ReactBaseComponent {
   }
 
   onClickSignUp() {
-    const { mailAddress, password, displayName } = this.state;
-    firebaseAuth.createUserWithEmailAndPassword(mailAddress, password)
-    .then((user) => {
-      user.updateProfile({ displayName });
-    })
+    const { mailAddressForSignUp, passwordForSignUp, displayName } = this.state;
+    firebaseAuth.createUserWithEmailAndPassword(mailAddressForSignUp, passwordForSignUp)
+    .then((user) => user.updateProfile({ displayName }))
+    .catch((error) => {
+      console.log(error.code);
+      console.log(error.message);
+    });
+  }
+
+  onClickSignIn() {
+    const { mailAddressForSignIn, passwordForSignIn } = this.state;
+    firebaseAuth.signInWithEmailAndPassword(mailAddressForSignIn, passwordForSignIn)
+    .then((user) => this.setLoginUser(user))
     .catch((error) => {
       console.log(error.code);
       console.log(error.message);
@@ -266,14 +282,85 @@ class App extends ReactBaseComponent {
     const { soundcloudConfig, vimeoConfig, youtubeConfig, fileConfig } = this.state;
     const { playingVideo, currentUser } = this.state;
     const { isLogin, name, photoURL } = currentUser;
+    const isSetPlayingVideo = playingVideo !== '';
+
+    const headerForNotLogin = (
+      <div>
+        <div>
+          <input
+            className="comment-input"
+            type="text"
+            placeholder="user name"
+            onChange={(e) => this.onChangeText('displayName', e.target.value)}
+            value={this.state.displayName}
+          >
+          </input>
+          <input
+            className="comment-input"
+            type="text"
+            placeholder="mail address"
+            onChange={(e) => this.onChangeText('mailAddressForSignUp', e.target.value)}
+            value={this.state.mailAddressForSignUp}
+          >
+          </input>
+          <input
+            className="comment-input"
+            type="text"
+            placeholder="password"
+            onChange={(e) => this.onChangeText('passwordForSignUp', e.target.value)}
+            value={this.state.passwordForSignUp}
+          >
+          </input>
+          <button onClick={this.onClickSignUp}>Sign Up</button>
+        </div>
+        <div>
+          <input
+            className="comment-input"
+            type="text"
+            placeholder="mail address"
+            onChange={(e) => this.onChangeText('mailAddressForSignIn', e.target.value)}
+            value={this.state.mailAddressForSignIn}
+          >
+          </input>
+          <input
+            className="comment-input"
+            type="text"
+            placeholder="password"
+            onChange={(e) => this.onChangeText('passwordForSignIn', e.target.value)}
+            value={this.state.passwordForSignIn}
+          >
+          </input>
+          <button onClick={this.onClickSignIn}>Sign In</button>
+        </div>
+      </div>
+    );
+
+    const headerForLogedin = (
+      <div>
+        <div>
+          <p>{name}</p>
+          <p>{photoURL}</p>
+        </div>
+        <button onClick={this.onClickSignOut}>Sign Out</button>
+      </div>
+    );
 
     const headerNode = (
       <header className="sss-header">
-        <p>{name}</p>
-        <p>
-          <span className="text-small">Now Playing</span>
-          {playingVideo.title} {playingVideo.displayName}
-        </p>
+        {(isLogin) ? headerForLogedin : headerForNotLogin}
+        {
+          isSetPlayingVideo &&
+            <p>
+              <span className="text-small">{PlayingVideoStatusText.playing}</span>
+              {playingVideo.title} {playingVideo.displayName}
+            </p>
+        }
+        {
+          !isSetPlayingVideo &&
+            <p>
+              <span className="text-small">{PlayingVideoStatusText.noVideos}</span>
+            </p>
+        }
       </header>
     );
 
@@ -328,48 +415,7 @@ class App extends ReactBaseComponent {
       <div>
         <br />
         <br />
-        <div>
-          {
-            !isLogin &&
-              <div>
-                <input
-                  className="comment-input"
-                  type="text"
-                  placeholder="displayName"
-                  onChange={(e) => this.onChangeText('displayName', e.target.value)}
-                  value={this.state.displayName}
-                >
-                </input>
-                <input
-                  className="comment-input"
-                  type="text"
-                  placeholder="mailAddress"
-                  onChange={(e) => this.onChangeText('mailAddress', e.target.value)}
-                  value={this.state.mailAddress}
-                >
-                </input>
-                <input
-                  className="comment-input"
-                  type="text"
-                  placeholder="password"
-                  onChange={(e) => this.onChangeText('password', e.target.value)}
-                  value={this.state.password}
-                >
-                </input>
-                <button onClick={this.onClickSignUp}>Sign Up</button>
-              </div>
-          }
-          {
-            isLogin &&
-              <div>
-                <div>
-                  <p>{name}</p>
-                  <p>{photoURL}</p>
-                </div>
-                <button onClick={this.onClickSignOut}>Sign Out</button>
-              </div>
-          }
-        </div>
+        {headerNode}
         <div className="sss-youtube-wrapper is-covered">
           <ReactPlayer
             ref={(player) => { this.player = player; }}
@@ -441,7 +487,6 @@ class App extends ReactBaseComponent {
             <td>{loaded.toFixed(3)}</td>
           </tr>
         </tbody></table>
-        {headerNode}
         <div className="controlls">
           <div className="pane comment-box">
             <ul className="comment-list-group">
