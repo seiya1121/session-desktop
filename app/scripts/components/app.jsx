@@ -265,8 +265,8 @@ class App extends ReactBaseComponent {
     const key = keyword.replace('/ giphy ', '');
     const giphyApp = giphy({ apiKey: 'dc6zaTOxFJmzC' });
     giphyApp.random(key).then((res) => {
-      console.log(res.data.image_url);
-      const comment = commentObj(res.data.image_url, this.state.currentUser.name, CommentType.gif);
+      const imageUrl = res.data.fixed_height_downsampled_url;
+      const comment = commentObj(imageUrl, this.state.currentUser.name, CommentType.gif);
       this.setState({ comments: [...this.state.comments, comment], commentText: '' });
     });
   }
@@ -282,7 +282,7 @@ class App extends ReactBaseComponent {
     youTubeNode.search(this.state.searchText, 50,
     (error, result) => {
       if (error) {
-        console.log(error);
+        // console.log(error);
       } else {
         this.setState({
           searchResultNum: result.items.length,
@@ -439,7 +439,7 @@ class App extends ReactBaseComponent {
         case CommentType.gif:
           return (
             <li key={i}>
-              <img src={comment.content} alt="" width="20%"></img>
+              <img src={comment.content} alt=""></img>
               <p>{comment.userName}</p>
             </li>
           );
