@@ -17,6 +17,7 @@ const SyncStates = [
 ];
 
 const youtubeUrl = (videoId) => `https://www.youtube.com/watch?v=${videoId}`;
+const videoObject = (video, userName) => Object.assign({}, video, { userName });
 
 class App extends ReactBaseComponent {
   constructor(props) {
@@ -94,8 +95,8 @@ class App extends ReactBaseComponent {
   }
 
   onClickCreateUser() {
-    const { userName, password } = this.state;
-    firebaseApp.auth().createUserWithEmailAndPassword(userName, password)
+    const { mailAddress, password } = this.state;
+    firebaseApp.auth().createUserWithEmailAndPassword(mailAddress, password)
     .catch((error) => {
       console.log(error.code);
       console.log(error.message);
@@ -202,11 +203,12 @@ class App extends ReactBaseComponent {
   }
 
   onClickSetQue(video) {
-    const { que } = this.state;
+    const { que, userName } = this.state;
+    const targetVideo = videoObject(video, userName);
     if (que.length === 0 && this.state.playingVideo === '') {
-      this.setState({ playingVideo: video });
+      this.setState({ playingVideo: targetVideo });
     } else {
-      this.setState({ que: [...que, video] });
+      this.setState({ que: [...que, targetVideo] });
     }
   }
 
@@ -250,8 +252,11 @@ class App extends ReactBaseComponent {
 
     const headerNode = (
       <header className="sss-header">
-        <span className="text-small">Now Playing</span> {this.state.playingVideo.title}
         <p>{this.state.userName}</p>
+        <p>
+          <span className="text-small">Now Playing</span>
+          {playingVideo.title} {playingVideo.userName}
+        </p>
       </header>
     );
 
@@ -288,6 +293,7 @@ class App extends ReactBaseComponent {
           <div className="media-body">
             <strong>{video.title}</strong>
           </div>
+          <p>added by {video.userName}</p>
         </li>
         <div>
           <span className="icon icon-cancel" onClick={() => this.onClickDeleteQue(video)}>x</span>
