@@ -5,6 +5,7 @@ import { YOUTUBE_API_KEY } from '../secret';
 import { base, firebaseApp } from '../firebaseApp';
 import YouTubeNode from 'youtube-node';
 import ReactPlayer from 'react-player';
+import { getAnimalName } from '../animal';
 
 const SyncStates = [
   { state: 'que', asArray: true },
@@ -16,14 +17,6 @@ const SyncStates = [
 ];
 
 const youtubeUrl = (videoId) => `https://www.youtube.com/watch?v=${videoId}`;
-
-const authDataCallback = (user) => {
-  if (user) {
-    console.log(`User: ${user.uid} is logged in with ${user.providerId}`);
-  } else {
-    console.log('User is logged out');
-  }
-};
 
 class App extends ReactBaseComponent {
   constructor(props) {
@@ -42,10 +35,12 @@ class App extends ReactBaseComponent {
       searchResult: [],
       searchResultNum: '',
       userName: '',
+      mailAddress: '',
       password: '',
       que: [],
       comments: [],
       users: [],
+      isLogin: false,
     };
 
     this.bind('onChangeText', 'videoSearch', 'setPlayingVideo', 'notification');
@@ -62,7 +57,15 @@ class App extends ReactBaseComponent {
       const { state, asArray } = obj;
       base.bindToState(state, { context: this, state, asArray });
     });
-    base.onAuth(authDataCallback);
+    base.onAuth(
+      (user) => {
+        if (user) {
+          console.log(`User: ${user.uid} is logged in with ${user.providerId}`);
+        } else {
+          this.setState({ userName: getAnimalName() });
+        }
+      }
+    );
   }
 
   componentDidMount() {
@@ -191,8 +194,10 @@ class App extends ReactBaseComponent {
 
   onKeyPressForComment(e) {
     if (e.which !== 13) return false;
+    if (e.target.value === '') return false;
     e.preventDefault();
-    this.setState({ comments: [...this.state.comments, e.target.value], commentText: '' });
+    const comment = `${this.state.userName}: ${e.target.value}`;
+    this.setState({ comments: [...this.state.comments, comment], commentText: '' });
     return true;
   }
 
@@ -246,6 +251,7 @@ class App extends ReactBaseComponent {
     const headerNode = (
       <header className="sss-header">
         <span className="text-small">Now Playing</span> {this.state.playingVideo.title}
+        <p>{this.state.userName}</p>
       </header>
     );
 
