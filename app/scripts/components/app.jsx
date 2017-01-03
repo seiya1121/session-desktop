@@ -6,7 +6,7 @@ import { base, firebaseAuth } from '../firebaseApp';
 import YouTubeNode from 'youtube-node';
 import ReactPlayer from 'react-player';
 import { getAnimalName } from '../animal';
-import 'whatwg-fetch';
+import giphy from 'giphy-api';
 
 const SyncStates = [
   { state: 'que', asArray: true },
@@ -57,7 +57,7 @@ class App extends ReactBaseComponent {
       currentUser: defaultCurrentUser,
     };
 
-    this.bind('onChangeText', 'videoSearch', 'setPlayingVideo', 'notification');
+    this.bind('onChangeText', 'videoSearch', 'setPlayingVideo', 'notification', 'setGifUrl');
     this.bind('onKeyPressForSearch', 'onKeyPressForComment');
     this.bind('onClickSetQue', 'onClickDeleteQue');
     this.bind('onClickSignUp', 'onClickSignOut', 'onClickSignIn');
@@ -234,22 +234,12 @@ class App extends ReactBaseComponent {
     if (e.target.value === '') return false;
     e.preventDefault();
     const isGif = e.target.value.includes('/ giphy');
-    const commentType = (isGif) ? CommentType.gif : CommentType.text;
-    let commentText = e.target.value;
     if (isGif) {
-      const key = 'hello';
-      const AppKey = 'dc6zaTOxFJmzC';
-      const Host = 'http://api.giphy.com';
-      const SearchPath = 'v1/gifs/random';
-      const url = (path, queryString) => `${Host}/${path}/${queryString}`;
-      const query = `?&api_key=${AppKey}&tag=${key}`;
-      fetch(url(SearchPath, query), { method: 'GET', mode: 'cors' })
-        .then((responce) => responce.json())
-        .then((json) => console.log(json.data));
-      commentText = key;
+      this.setGifUrl(e.target.value);
+    } else {
+      const comment = commentObj(e.target.value, this.state.currentUser.name, CommentType.text);
+      this.setState({ comments: [...this.state.comments, comment], commentText: '' });
     }
-    const comment = commentObj(commentText, this.state.currentUser.name, commentType);
-    this.setState({ comments: [...this.state.comments, comment], commentText: '' });
     return true;
   }
 
@@ -269,6 +259,16 @@ class App extends ReactBaseComponent {
 
   onChangeText(type, value) {
     this.setState({ [type]: value });
+  }
+
+  setGifUrl(keyword) {
+    const key = keyword.replace('/ giphy ', '');
+    const giphyApp = giphy({ apiKey: 'dc6zaTOxFJmzC' });
+    giphyApp.random(key).then((res) => {
+      console.log(res.data.image_url);
+      const comment = commentObj(res.data.image_url, this.state.currentUser.name, CommentType.gif);
+      this.setState({ comments: [...this.state.comments, comment], commentText: '' });
+    });
   }
 
   videoSearch() {
@@ -439,7 +439,7 @@ class App extends ReactBaseComponent {
         case CommentType.gif:
           return (
             <li key={i}>
-              <p>{comment.context}</p>
+              <img src={comment.content} alt="" width="20%"></img>
               <p>{comment.userName}</p>
             </li>
           );

@@ -43,6 +43,8 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "firebase": "^3.6.2",
+    "giphy-api": "^1.2.3",
+    "humps": "^2.0.0",
     "re-base": "^2.5.1",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
