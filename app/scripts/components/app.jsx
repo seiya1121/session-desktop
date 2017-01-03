@@ -6,6 +6,7 @@ import { base, firebaseAuth } from '../firebaseApp';
 import YouTubeNode from 'youtube-node';
 import ReactPlayer from 'react-player';
 import { getAnimalName } from '../animal';
+import giphy from 'giphy-api';
 
 const SyncStates = [
   { state: 'que', asArray: true },
@@ -25,6 +26,9 @@ const PlayingVideoStatusText = {
   playing: 'Now Playing',
   noVideos: "There're no videos to play.",
 };
+const CommentType = { text: 'text', log: 'log', gif: 'gif' };
+
+const commentObj = (content, userName, type) => Object.assign({}, { content, userName, type });
 
 class App extends ReactBaseComponent {
   constructor(props) {
@@ -53,7 +57,7 @@ class App extends ReactBaseComponent {
       currentUser: defaultCurrentUser,
     };
 
-    this.bind('onChangeText', 'videoSearch', 'setPlayingVideo', 'notification');
+    this.bind('onChangeText', 'videoSearch', 'setPlayingVideo', 'notification', 'setGifUrl');
     this.bind('onKeyPressForSearch', 'onKeyPressForComment');
     this.bind('onClickSetQue', 'onClickDeleteQue');
     this.bind('onClickSignUp', 'onClickSignOut', 'onClickSignIn');
@@ -113,26 +117,26 @@ class App extends ReactBaseComponent {
   onClickSignUp() {
     const { mailAddressForSignUp, passwordForSignUp, displayName } = this.state;
     firebaseAuth.createUserWithEmailAndPassword(mailAddressForSignUp, passwordForSignUp)
-    .then((user) => user.updateProfile({ displayName }))
-    .catch((error) => {
-      console.log(error.code);
-      console.log(error.message);
-    });
+      .then((user) => user.updateProfile({ displayName }))
+      .catch((error) => {
+        console.log(error.code);
+        console.log(error.message);
+      });
   }
 
   onClickSignIn() {
     const { mailAddressForSignIn, passwordForSignIn } = this.state;
     firebaseAuth.signInWithEmailAndPassword(mailAddressForSignIn, passwordForSignIn)
-    .then((user) => this.setLoginUser(user))
-    .catch((error) => {
-      console.log(error.code);
-      console.log(error.message);
-    });
+      .then((user) => this.setLoginUser(user))
+      .catch((error) => {
+        console.log(error.code);
+        console.log(error.message);
+      });
   }
 
   onClickSignOut() {
     firebaseAuth.signOut()
-    .then(() => this.setState({ currentUser: null }));
+     .then(() => this.setState({ currentUser: null }));
   }
 
   playPause() {
@@ -193,7 +197,7 @@ class App extends ReactBaseComponent {
       playingVideo: video,
       startTime: 0,
       que: this.state.que.filter((item) => item.key !== video.key),
-      comments: [...this.state.comments, `play ${video.title}`],
+      comments: [...this.state.comments, commentObj(`play ${video.title}`, '', CommentType.log)],
     });
   }
 
@@ -229,8 +233,13 @@ class App extends ReactBaseComponent {
     if (e.which !== 13) return false;
     if (e.target.value === '') return false;
     e.preventDefault();
-    const comment = `${this.state.currentUser.name}: ${e.target.value}`;
-    this.setState({ comments: [...this.state.comments, comment], commentText: '' });
+    const isGif = e.target.value.includes('/ giphy');
+    if (isGif) {
+      this.setGifUrl(e.target.value);
+    } else {
+      const comment = commentObj(e.target.value, this.state.currentUser.name, CommentType.text);
+      this.setState({ comments: [...this.state.comments, comment], commentText: '' });
+    }
     return true;
   }
 
@@ -252,29 +261,35 @@ class App extends ReactBaseComponent {
     this.setState({ [type]: value });
   }
 
+  setGifUrl(keyword) {
+    const key = keyword.replace('/ giphy ', '');
+    const giphyApp = giphy({ apiKey: 'dc6zaTOxFJmzC' });
+    giphyApp.random(key).then((res) => {
+      const imageUrl = res.data.fixed_height_downsampled_url;
+      const comment = commentObj(imageUrl, this.state.currentUser.name, CommentType.gif);
+      this.setState({ comments: [...this.state.comments, comment], commentText: '' });
+    });
+  }
+
   videoSearch() {
     const youTubeNode = new YouTubeNode();
+    const searchResultObj = (result) => ({
+      videoId: result.id.videoId,
+      title: result.snippet.title,
+      thumbnail: result.snippet.thumbnails.default,
+    });
     youTubeNode.setKey(YOUTUBE_API_KEY);
-    youTubeNode.search(
-      this.state.searchText,
-      50,
-      (error, result) => {
-        if (error) {
-          console.log(error);
-        } else {
-          this.setState({
-            searchResultNum: result.items.length,
-            searchResult: result.items.map((it) => (
-              {
-                videoId: it.id.videoId,
-                title: it.snippet.title,
-                thumbnail: it.snippet.thumbnails.default,
-              }
-            )),
-          });
-        }
+    youTubeNode.search(this.state.searchText, 50,
+    (error, result) => {
+      if (error) {
+        // console.log(error);
+      } else {
+        this.setState({
+          searchResultNum: result.items.length,
+          searchResult: result.items.map((item) => searchResultObj(item)),
+        });
       }
-    );
+    });
   }
 
   render() {
@@ -405,11 +420,33 @@ class App extends ReactBaseComponent {
       </div>
     ));
 
-    const commentsNode = this.state.comments.map((comment, i) => (
-      <li key={i}>
-        {comment}
-      </li>
-    ));
+    const commentsNode = this.state.comments.map((comment, i) => {
+      switch (comment.type) {
+        case CommentType.text:
+          return (
+            <li key={i}>
+              <p>{comment.content}</p>
+              <p>{comment.userName}</p>
+            </li>
+          );
+        case CommentType.log:
+          return (
+            <li key={i}>
+              <p>{comment.content}</p>
+              <p>{comment.userName}</p>
+            </li>
+          );
+        case CommentType.gif:
+          return (
+            <li key={i}>
+              <img src={comment.content} alt=""></img>
+              <p>{comment.userName}</p>
+            </li>
+          );
+        default:
+          return '';
+      }
+    });
 
     return (
       <div>
