@@ -77,6 +77,15 @@ class App extends ReactBaseComponent {
     });
   }
 
+  setLoginUserForSignUp(user, displayName) {
+    const { photoURL } = user;
+    this.setState({
+      currentUser: Object.assign({}, this.state.currentUser,
+        { name: displayName, photoURL, isLogin: true }
+      ),
+    });
+  }
+
   componentWillMount() {
     SyncStates.forEach((obj) => {
       const { state, asArray } = obj;
@@ -118,11 +127,20 @@ class App extends ReactBaseComponent {
   onClickSignUp() {
     const { mailAddressForSignUp, passwordForSignUp, displayName } = this.state;
     firebaseAuth.createUserWithEmailAndPassword(mailAddressForSignUp, passwordForSignUp)
-      .then((user) => user.updateProfile({ displayName }))
+      .then((user) => {
+        user.updateProfile({ displayName });
+        this.setLoginUserForSignUp(user, displayName);
+      })
       .catch((error) => {
         console.log(error.code);
         console.log(error.message);
       });
+    firebaseAuth.onAuthStateChanged((user) => {
+      if (user) {
+          // User is signed in.
+        this.setLoginUserForSignUp(user, displayName);
+      }
+    });
   }
 
   onClickSignIn() {
@@ -137,7 +155,7 @@ class App extends ReactBaseComponent {
 
   onClickSignOut() {
     firebaseAuth.signOut()
-     .then(() => this.setState({ currentUser: null }));
+     .then(() => this.setState({ currentUser: defaultCurrentUser }));
   }
 
   playPause() {
