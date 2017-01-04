@@ -29,6 +29,7 @@ const PlayingVideoStatusText = {
 const CommentType = { text: 'text', log: 'log', gif: 'gif' };
 
 const commentObj = (content, userName, type) => Object.assign({}, { content, userName, type });
+const commandType = { giphy: '/ giphy ' };
 
 class App extends ReactBaseComponent {
   constructor(props) {
@@ -233,7 +234,7 @@ class App extends ReactBaseComponent {
     if (e.which !== 13) return false;
     if (e.target.value === '') return false;
     e.preventDefault();
-    const isGif = e.target.value.includes('/ giphy');
+    const isGif = e.target.value.includes(commandType.giphy);
     if (isGif) {
       this.setGifUrl(e.target.value);
     } else {
@@ -262,7 +263,7 @@ class App extends ReactBaseComponent {
   }
 
   setGifUrl(keyword) {
-    const key = keyword.replace('/ giphy ', '');
+    const key = keyword.replace(commandType.giphy, '');
     const giphyApp = giphy({ apiKey: 'dc6zaTOxFJmzC' });
     giphyApp.random(key).then((res) => {
       const imageUrl = res.data.fixed_height_downsampled_url;
