@@ -29,7 +29,7 @@ const PlayingVideoStatusText = {
 const CommentType = { text: 'text', log: 'log', gif: 'gif' };
 
 const commentObj = (content, userName, type) => Object.assign({}, { content, userName, type });
-const commandType = { giphy: '/ giphy ' };
+const commandType = { giphy: '/giphy ' };
 
 class App extends ReactBaseComponent {
   constructor(props) {
