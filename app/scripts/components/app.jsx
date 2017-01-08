@@ -319,7 +319,7 @@ class App extends ReactBaseComponent {
     const isSetPlayingVideo = playingVideo !== '';
 
     const headerForNotLogin = (
-      <div>
+      <div className="none">
         <div>
           <input
             className="comment-input"
@@ -370,7 +370,7 @@ class App extends ReactBaseComponent {
     );
 
     const headerForLogedin = (
-      <div>
+      <div className="none">
         <div>
           <p>{name}</p>
           <p>{photoURL}</p>
@@ -380,21 +380,22 @@ class App extends ReactBaseComponent {
     );
 
     const headerNode = (
-      <header className="sss-header">
-        {(isLogin) ? headerForLogedin : headerForNotLogin}
+      <header className="header-bar">
         {
           isSetPlayingVideo &&
-            <p>
-              <span className="text-small">{PlayingVideoStatusText.playing}</span>
+            <p className="header-bar__text">
+              <span className="header-bar__text--message">{PlayingVideoStatusText.playing}</span>
               {playingVideo.title} {playingVideo.displayName}
             </p>
         }
         {
           !isSetPlayingVideo &&
-            <p>
-              <span className="text-small">{PlayingVideoStatusText.noVideos}</span>
+            <p className="header-bar__text">
+              <span className="header-bar__text--message">{PlayingVideoStatusText.noVideos}</span>
             </p>
         }
+        {/* ログイン機能、レイアウト考える上でめんどいから一旦非表示 */}
+        {(isLogin) ? headerForLogedin : headerForNotLogin}
       </header>
     );
 
@@ -468,126 +469,150 @@ class App extends ReactBaseComponent {
     });
 
     return (
-      <div>
-        <br />
-        <br />
+      <div className="contents">
         {headerNode}
-        <div className="sss-youtube-wrapper is-covered">
-          <ReactPlayer
-            ref={(player) => { this.player = player; }}
-            className="react-player"
-            width={480}
-            height={270}
-            url={youtubeUrl(playingVideo.videoId)}
-            playing={playing}
-            volume={volume}
-            soundcloudConfig={soundcloudConfig}
-            vimeoConfig={vimeoConfig}
-            youtubeConfig={youtubeConfig}
-            fileConfig={fileConfig}
-            onReady={this.onReady}
-            onStart={() => console.log('onStart')}
-            onPlay={() => this.onPlay(playingVideo)}
-            onPause={() => this.setState({ playing: false })}
-            onBuffer={() => console.log('onBuffer')}
-            onEnded={this.onEnded}
-            onError={(e) => console.log('onError', e)}
-            onProgress={this.onProgress}
-            onDuration={(duration) => this.setState({ duration })}
-          />
+
+        <div className="main-display">
+          {/* youotube */}
+          <div className="display-youtube">
+            <ReactPlayer
+              ref={(player) => { this.player = player; }}
+              className="react-player"
+              width={"100%"}
+              height={"100%"}
+              url={youtubeUrl(playingVideo.videoId)}
+              playing={playing}
+              volume={volume}
+              soundcloudConfig={soundcloudConfig}
+              vimeoConfig={vimeoConfig}
+              youtubeConfig={youtubeConfig}
+              fileConfig={fileConfig}
+              onReady={this.onReady}
+              onStart={() => console.log('onStart')}
+              onPlay={() => this.onPlay(playingVideo)}
+              onPause={() => this.setState({ playing: false })}
+              onBuffer={() => console.log('onBuffer')}
+              onEnded={this.onEnded}
+              onError={(e) => console.log('onError', e)}
+              onProgress={this.onProgress}
+              onDuration={(duration) => this.setState({ duration })}
+            />
+          </div>
         </div>
-        <table><tbody>
-          <tr>
-            <th>Controls</th>
-            <td>
-              <button onClick={this.stop}>Stop</button>
-              <button onClick={this.playPause}>{playing ? 'Pause' : 'Play'}</button>
-            </td>
-          </tr>
-          <tr>
-            <th>Seek</th>
-            <td>
+
+        <div className="footer-bar">
+          {/* progress */}
+
+          <div className="play-controll">
+            <button
+              className="play-controll__play"
+              onClick={this.playPause}
+            >
+              {playing ? 'Pause' : 'Play'}
+            </button>
+            <button
+              className="play-controll__stop"
+              onClick={this.stop}
+            >&nbsp;</button>
+          </div>
+
+          <div className="progress-box">
+            {
+              isSetPlayingVideo &&
+                <p className="progress-box__ttl">
+                  {playingVideo.title} {playingVideo.displayName}
+                </p>
+            }
+            {
+              !isSetPlayingVideo &&
+                <p className="progress-box__ttl">
+                  <span className="header-bar__text--message">
+                    {PlayingVideoStatusText.noVideos}
+                  </span>
+                </p>
+            }
+            <div className="progress-bar">
               <input
+                className="progress-bar__seek"
                 type="range" min={0} max={1} step="any"
                 value={played}
                 onMouseDown={this.onSeekMouseDown}
                 onChange={this.onSeekChange}
                 onMouseUp={this.onSeekMouseUp}
               />
-            </td>
-          </tr>
-          <tr>
-            <th>Volume</th>
-            <td>
+              <div
+                className="progress-bar__played"
+                style={{ width: `${100 * played}%` }}
+              ></div>
+              <div
+                className="progress-bar__loaded"
+                style={{ width: `${100 * loaded}%` }}
+              ></div>
+            </div>
+            <div className="progress-box__status">
+              <p>played {played.toFixed(3)} / loaded {loaded.toFixed(3)}</p>
+            </div>
+          </div>
+
+          <div className="volume-box">
+            <p className="volume-box__ttl">
+              Volume
+            </p>
+            <div className="volume-box__range-wrap">
               <input
+                className="volume-box__range"
                 type="range" min={0} max={1} step="any" value={volume} onChange={this.setVolume}
               />
-            </td>
-          </tr>
-          <tr>
-            <th>Played</th>
-            <td><progress max={1} value={played} /></td>
-          </tr>
-          <tr>
-            <th>Loaded</th>
-            <td><progress max={1} value={loaded} /></td>
-          </tr>
-        </tbody></table>
-        <table><tbody>
-          <tr>
-            <th>played</th>
-            <td>{played.toFixed(3)}</td>
-          </tr>
-          <tr>
-            <th>loaded</th>
-            <td>{loaded.toFixed(3)}</td>
-          </tr>
-        </tbody></table>
-        <div className="controlls">
-          <div className="pane comment-box">
-            <ul className="comment-list-group">
-              {commentsNode}
-            </ul>
-            <input
-              className="comment-input"
-              type="text"
-              placeholder="type comment"
-              onChange={(e) => this.onChangeText('commentText', e.target.value)}
-              onKeyPress={this.onKeyPressForComment}
-              value={this.state.commentText}
-            >
-            </input>
+            </div>
           </div>
+        </div>
 
-          <div className="pane list-box">
-            <h5 className="nav-group-title">
-              <span className="icon icon-music"></span>
-              Up Coming({this.state.que.length} videos}
-            </h5>
-            <ul className="list-group">
-              {queNode}
-            </ul>
-          </div>
 
-          <div className="pane">
-            <ul className="list-group">
-              <li className="list-group-header">
-                <span className="icon icon-search"></span>
-                <input
-                  className="form-control"
-                  type="text"
-                  placeholder="Search for something you want"
-                  onChange={(e) => this.onChangeText('searchText', e.target.value)}
-                  onKeyPress={this.onKeyPressForSearch}
-                  value={this.state.searchText}
-                >
-                </input>
-              </li>
-            </ul>
-            <h5 className="nav-group-title">Search Result</h5>
-            {searchResultNode}
-          </div>
+        {/* comment */}
+        <div className="comment-box">
+          <ul className="comment-list-group">
+            {commentsNode}
+          </ul>
+          <input
+            className="comment-input"
+            type="text"
+            placeholder="type comment"
+            onChange={(e) => this.onChangeText('commentText', e.target.value)}
+            onKeyPress={this.onKeyPressForComment}
+            value={this.state.commentText}
+          >
+          </input>
+        </div>
 
+        {/* Play list */}
+        <div>
+          <h5 className="nav-group-title">
+            <span className="icon icon-music"></span>
+            Up Coming({this.state.que.length} videos}
+          </h5>
+          <ul className="list-group">
+            {queNode}
+          </ul>
+        </div>
+
+        {/* Search */}
+        <div>
+          <ul className="list-group">
+            <li className="list-group-header">
+              <span className="icon icon-search"></span>
+              <input
+                className="form-control"
+                type="text"
+                placeholder="Search for something you want"
+                onChange={(e) => this.onChangeText('searchText', e.target.value)}
+                onKeyPress={this.onKeyPressForSearch}
+                value={this.state.searchText}
+              >
+              </input>
+            </li>
+          </ul>
+          <h5 className="nav-group-title">Search Result</h5>
+          {searchResultNode}
         </div>
       </div>
     );

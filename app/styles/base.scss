@@ -1,20 +1,253 @@
 
 
+// variables
+$header-height: 30px;
+$footer-height: 80px;
+$display-height: calc( 100% - 110px ); // 変数計算したいのにうまくいかないのなんで
 
-/* youtubeは画面いっぱいだよ★ */
+$color-black: #000000;
+$color-white: #FFFFFF;
+
+%input-range-disable {
+  -webkit-appearance: none;
+  // -moz-appearance: none;
+  // appearance: none;
+}
 
 html, body {
   width: 100%;
   height: 100%;
+
+  color: $color-white;
+
+  background: $color-black;
 }
 
 * {
-  color: #FFF;
-  display: none;
+
+  &:focus {
+    outline: 0;
+  }
 }
 
 input {
-  background: #333;
+  color: #000000;
 }
 
-/* コメント */
+// 開発用：一旦消す
+.none {
+  display:none
+}
+
+/* mainlayout
+## レイアウト上の構成
+.contents
+  .header-bar : 画面上部のバー
+  .main-display : 画面中部のメインディスプレイ
+  .footer-bar : 画面下部の
+ */
+
+#root {
+  height: 100%;
+}
+
+.contents {
+  width: 100%;
+  height: 100%;
+}
+
+.header-bar {
+  box-sizing: border-box;
+  height: $header-height;
+  padding: 6px 0 6px 72px;
+
+  overflow: hidden;
+  font-size: 12px;
+
+  border-bottom:solid 1px #333333;
+
+  &__text {
+    margin: 0;
+
+    &--message {
+      color: #999999;
+      padding: 0 20px 0 0;
+    }
+  }
+}
+
+.main-display {
+  height: $display-height;
+  overflow: auto;
+}
+
+.footer-bar {
+  box-sizing: border-box;
+  height: $footer-height;
+
+  overflow: hidden;
+
+  border-top:solid 1px #333333;
+}
+
+/* main の要素
+
+*/
+
+// このサイズを変えればyoutube自体はそれに自動でアジャストされる
+// modeごとにサイズ変えればOKな感じ
+.display-youtube {
+  height: 100%;
+}
+
+
+/* footer の要素
+
+*/
+
+%controll-default {
+  width: 25px;
+  height: 25px;
+  display: block;
+  float: left;
+
+  margin: 0 5px;
+
+  border-radius: 50%;
+  border: solid 1px $color-white;
+  background: $color-black;
+}
+
+.play-controll {
+  float: left;
+  width: 150px;
+  box-sizing: border-box;
+  padding: 25px 40px;
+
+  &__play {
+    @extend %controll-default;
+
+  }
+
+  &__stop {
+    @extend %controll-default;
+
+  }
+}
+
+.progress-box {
+  float: left;
+  width: calc( 100% - 300px );
+  box-sizing: border-box;
+
+  padding: 0 10px;
+
+  &__ttl {
+    text-align: center;
+    color: $color-white;
+    font-size: 12px;
+  }
+
+  &__status p {
+    text-align: center;
+    font-size: 12px;
+    color: #666666;
+    margin: 10px 0;
+  }
+}
+
+.volume-box {
+  float: left;
+  width: 150px;
+  box-sizing: border-box;
+  padding: 0 10px;
+
+  &__ttl {
+    text-align: center;
+    color: #666666;
+    font-size: 12px;
+  }
+
+  &__range-wrap {
+    height: 1px;
+    position: relative;
+  }
+
+  &__range {
+    @extend %input-range-disable;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 1px;
+    background: #333333;
+
+    &::-webkit-slider-thumb {
+      @extend %input-range-disable;
+
+      width: 10px;
+      height: 10px;
+      cursor: pointer;
+      box-sizing: border-box;
+      border-radius: 50%;
+      border: solid 1px $color-white;
+      background: $color-black;
+    }
+  }
+}
+
+.progress-bar {
+  width: 100%;
+  height: 1px;
+  position: relative;
+  background: #333333;
+
+  %progress-size-positioning {
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    height: 1px;
+  }
+
+  // つまみのスタイル
+  &__seek {
+    @extend %input-range-disable;
+    @extend %progress-size-positioning;
+
+    width: 100%;
+    z-index: 100;
+
+    background: transparent;
+
+    &::-webkit-slider-thumb {
+      @extend %input-range-disable;
+
+      width: 10px;
+      height: 10px;
+      cursor: pointer;
+      box-sizing: border-box;
+      border-radius: 50%;
+      border: solid 1px $color-white;
+      background: $color-black;
+    }
+    &:hover::-webkit-slider-thumb {
+      width: 15px;
+      height: 15px;
+      transition: .2s;
+    }
+  }
+
+  &__played {
+    @extend %progress-size-positioning;
+    z-index: 10;
+
+    background: #26BFBA;
+  }
+
+  &__loaded {
+    @extend %progress-size-positioning;
+    z-index: 5;
+
+    background: #999999;
+  }
+}
