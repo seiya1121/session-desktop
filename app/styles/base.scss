@@ -7,6 +7,7 @@ $display-height: calc( 100% - 110px ); // 変数計算したいのにうまく�
 
 $color-black: #000000;
 $color-white: #FFFFFF;
+$color-key: #26BFBA;
 
 %input-range-disable {
   -webkit-appearance: none;
@@ -116,6 +117,9 @@ input {
   border-radius: 50%;
   border: solid 1px $color-white;
   background: $color-black;
+  cursor: pointer;
+
+  position: relative;
 }
 
 .play-controll {
@@ -127,10 +131,58 @@ input {
   &__play {
     @extend %controll-default;
 
+    &:before {
+      font-size: 0;
+      position: absolute;
+      left: 8px;
+      top: 6px;
+      content: "";
+      width: 10px;
+      height: 0;
+      border: 5px solid transparent;
+      border-left: 8px solid $color-key;
+      line-height: 0;
+    }
+  }
+
+  &__pause {
+    @extend %controll-default;
+
+    &:before,
+    &:after {
+      content: "";
+      font-size: 0;
+      line-height: 0;
+      position: absolute;
+      top: 7px;
+      width: 2px;
+      height: 8px;
+      background: $color-key;
+    }
+
+    &:before {
+      left: 13px;
+    }
+
+    &:after {
+      left: 8px;
+    }
   }
 
   &__stop {
     @extend %controll-default;
+
+    &:before {
+      content: "";
+      font-size: 0;
+      line-height: 0;
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      width: 7px;
+      height: 7px;
+      background: $color-key;
+    }
 
   }
 }
@@ -241,7 +293,7 @@ input {
     @extend %progress-size-positioning;
     z-index: 10;
 
-    background: #26BFBA;
+    background: $color-key;
   }
 
   &__loaded {

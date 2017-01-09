@@ -5,6 +5,7 @@ import { YOUTUBE_API_KEY } from '../secret';
 import { base, firebaseAuth } from '../firebaseApp';
 import YouTubeNode from 'youtube-node';
 import ReactPlayer from 'react-player';
+import classNames from 'classNames';
 import { getAnimalName } from '../animal';
 import giphy from 'giphy-api';
 
@@ -505,10 +506,13 @@ class App extends ReactBaseComponent {
 
           <div className="play-controll">
             <button
-              className="play-controll__play"
+              className={classNames(
+                { 'play-controll__play': playing },
+                { 'play-controll__pause': !playing },
+              )}
               onClick={this.playPause}
             >
-              {playing ? 'Pause' : 'Play'}
+              &nbsp;
             </button>
             <button
               className="play-controll__stop"
