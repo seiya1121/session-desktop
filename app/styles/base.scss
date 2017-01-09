@@ -80,6 +80,7 @@ input {
 .main-display {
   height: $display-height;
   overflow: auto;
+  position: relative;
 }
 
 .footer-bar {
@@ -100,6 +101,67 @@ input {
 .display-youtube {
   height: 100%;
 }
+
+.display-comments {
+  box-sizing: border-box;
+  position: absolute;
+  height: 100%;
+  width: 30%;
+  left:0;
+  top:0;
+  padding: 0 10px 10px;
+  background: transparentize($color-black, .4);
+
+  .comments-stream {
+    position: absolute;
+    left: 20px;
+    bottom: 60px;
+    font-size: 12px;
+    padding: 0;
+
+    &__item {
+      position: relative;
+      list-style: none;
+      padding: 15px 0 15px;
+      border-bottom: 1px solid transparentize($color-white, .8);
+    }
+
+    &__item--play {
+      @extend .comments-stream__item;
+      color: $color-key;
+    }
+
+    .comment-single {
+      color: $color-white;
+      padding-left: 60px;
+    }
+
+    .comment-author {
+      position: absolute;
+      box-sizing: border-box;
+      padding: 0 5px 0 0;
+      left: 0;
+      top: 15px;
+      width: 60px;
+      color: #999999;
+    }
+  }
+
+
+
+  .comment-input {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    z-index: 10;
+    width: calc( 100% - 26px );
+    height: 3em;
+    font-size: 12px;
+
+  }
+}
+
+
 
 
 /* footer の要素

@@ -445,23 +445,27 @@ class App extends ReactBaseComponent {
       switch (comment.type) {
         case CommentType.text:
           return (
-            <li key={i}>
-              <p>{comment.content}</p>
-              <p>{comment.userName}</p>
+            <li key={i} className="comments-stream__item">
+              <div className="comment-author">
+                {comment.userName}
+              </div>
+              <div className="comment-single">
+                {comment.content}
+              </div>
             </li>
           );
         case CommentType.log:
           return (
-            <li key={i}>
-              <p>{comment.content}</p>
-              <p>{comment.userName}</p>
+            <li key={i} className="comments-stream__item--play">
+              {comment.content}
+              {comment.userName}
             </li>
           );
         case CommentType.gif:
           return (
-            <li key={i}>
+            <li key={i} className="comments-stream__item">
               <img src={comment.content} alt=""></img>
-              <p>{comment.userName}</p>
+              {comment.userName}
             </li>
           );
         default:
@@ -499,6 +503,23 @@ class App extends ReactBaseComponent {
               onDuration={(duration) => this.setState({ duration })}
             />
           </div>
+
+          {/* comment */}
+          <div className="display-comments">
+            <ul className="comments-stream">
+              {commentsNode}
+            </ul>
+            <input
+              className="comment-input"
+              type="text"
+              placeholder="type comment"
+              onChange={(e) => this.onChangeText('commentText', e.target.value)}
+              onKeyPress={this.onKeyPressForComment}
+              value={this.state.commentText}
+            >
+            </input>
+          </div>
+
         </div>
 
         <div className="footer-bar">
@@ -569,23 +590,6 @@ class App extends ReactBaseComponent {
               />
             </div>
           </div>
-        </div>
-
-
-        {/* comment */}
-        <div className="comment-box">
-          <ul className="comment-list-group">
-            {commentsNode}
-          </ul>
-          <input
-            className="comment-input"
-            type="text"
-            placeholder="type comment"
-            onChange={(e) => this.onChangeText('commentText', e.target.value)}
-            onKeyPress={this.onKeyPressForComment}
-            value={this.state.commentText}
-          >
-          </input>
         </div>
 
         {/* Play list */}
