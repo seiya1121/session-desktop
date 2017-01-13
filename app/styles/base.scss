@@ -55,6 +55,7 @@ input {
 .contents {
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
 .header-bar {
@@ -79,7 +80,7 @@ input {
 
 .main-display {
   height: $display-height;
-  overflow: auto;
+  overflow: hidden;
   position: relative;
 }
 
@@ -107,62 +108,60 @@ input {
   position: absolute;
   height: 100%;
   width: 30%;
-  left:0;
-  top:0;
-  padding: 0 10px 10px;
-  background: transparentize($color-black, .4);
+  left: 20px;
+  bottom: 20px;
+  padding: 0;
+  overflow: auto;
 
   .comments-stream {
     position: absolute;
-    left: 20px;
-    bottom: 60px;
+    left: 0;
+    bottom: 40px;
     font-size: 12px;
     padding: 0;
+    width: 100%;
+    overflow: hidden;
 
     &__item {
+      margin: 10px 0 0;
       position: relative;
       list-style: none;
-      padding: 15px 0 15px;
-      border-bottom: 1px solid transparentize($color-white, .8);
+      border-radius: 10px;
+      padding: 10px;
+      background: transparentize($color-white, .4);
+      float: left;
+      clear: left;
     }
 
     &__item--play {
       @extend .comments-stream__item;
-      color: $color-key;
+      background: $color-key;
     }
 
     .comment-single {
-      color: $color-white;
-      padding-left: 60px;
+      color: $color-black;
     }
 
     .comment-author {
-      position: absolute;
-      box-sizing: border-box;
-      padding: 0 5px 0 0;
-      left: 0;
-      top: 15px;
-      width: 60px;
-      color: #999999;
+      padding: 0;
+      color: #666666;
     }
   }
 
-
-
   .comment-input {
+    border: none;
+    box-sizing: border-box;
+    padding: 15px;
     position: absolute;
-    bottom: 20px;
-    left: 20px;
+    bottom: 0;
+    border-radius: 10px;
+    left: 0;
     z-index: 10;
-    width: calc( 100% - 26px );
+    width: 100%;
     height: 3em;
     font-size: 12px;
-
   }
 }
-
-
-
 
 /* footer の要素
 
@@ -249,6 +248,12 @@ input {
   }
 }
 
+%footer-ttl {
+  text-align: center;
+  font-size: 12px;
+  height: 1em;
+}
+
 .progress-box {
   float: left;
   width: calc( 100% - 300px );
@@ -257,9 +262,8 @@ input {
   padding: 0 10px;
 
   &__ttl {
-    text-align: center;
+    @extend %footer-ttl;
     color: $color-white;
-    font-size: 12px;
   }
 
   &__status p {
@@ -277,9 +281,8 @@ input {
   padding: 0 10px;
 
   &__ttl {
-    text-align: center;
+    @extend %footer-ttl;
     color: #666666;
-    font-size: 12px;
   }
 
   &__range-wrap {

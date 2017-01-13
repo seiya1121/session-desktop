@@ -446,11 +446,11 @@ class App extends ReactBaseComponent {
         case CommentType.text:
           return (
             <li key={i} className="comments-stream__item">
-              <div className="comment-author">
-                {comment.userName}
-              </div>
               <div className="comment-single">
                 {comment.content}
+              </div>
+              <div className="comment-author">
+                {comment.userName}
               </div>
             </li>
           );
@@ -528,8 +528,8 @@ class App extends ReactBaseComponent {
           <div className="play-controll">
             <button
               className={classNames(
-                { 'play-controll__play': playing },
-                { 'play-controll__pause': !playing },
+                { 'play-controll__pause': playing },
+                { 'play-controll__play': !playing },
               )}
               onClick={this.playPause}
             >
