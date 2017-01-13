@@ -131,6 +131,10 @@ input {
       background: transparentize($color-white, .4);
       float: left;
       clear: left;
+
+      img {
+        width: 100%;
+      }
     }
 
     &__item--play {

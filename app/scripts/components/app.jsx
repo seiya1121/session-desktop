@@ -217,7 +217,7 @@ class App extends ReactBaseComponent {
       playingVideo: video,
       startTime: 0,
       que: this.state.que.filter((item) => item.key !== video.key),
-      comments: [...this.state.comments, commentObj(`play ${video.title}`, '', CommentType.log)],
+      comments: [...this.state.comments, commentObj(`# ${video.title}`, '', CommentType.log)],
     });
   }
 
@@ -465,7 +465,9 @@ class App extends ReactBaseComponent {
           return (
             <li key={i} className="comments-stream__item">
               <img src={comment.content} alt=""></img>
-              {comment.userName}
+              <div className="comment-author">
+                {comment.userName}
+              </div>
             </li>
           );
         default:
