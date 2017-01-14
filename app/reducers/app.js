@@ -3,8 +3,12 @@ import * as App from '../constants/app';
 const app = (state = App.InitialState, action) => {
   const newState = (obj) => Object.assign({}, state, obj);
   switch (action.type) {
+    case App.CHANGE_VALUE_WITH_KEY:
+      return newState({ [action.key]: action.value });
     case App.CHANGE_TEXT:
       return newState({ [action.textType]: action.text });
+    case App.CHANGE_SEARCH_TEXT:
+      return newState({ searchText: action.text, isSearchActive: action.isSearchActive });
     case App.SET_PLAYING_VIDEO:
       return newState({
         playing: true,

@@ -8,7 +8,6 @@ import { base, firebaseAuth } from '../config/firebaseApp';
 import YouTubeNode from 'youtube-node';
 import ReactPlayer from 'react-player';
 import classNames from 'classNames';
-import { getAnimalName } from '../scripts/animal';
 import giphy from 'giphy-api';
 import '../styles/base.scss';
 import '../styles/normalize.scss';
@@ -24,9 +23,6 @@ const SyncStates = [
 
 const youtubeUrl = (videoId) => `https://www.youtube.com/watch?v=${videoId}`;
 const videoObject = (video, userName) => Object.assign({}, video, { userName });
-const defaultCurrentUser = Object.assign(
-  {}, { name: getAnimalName(), photoURL: '', isLogin: false }
-);
 const CommentType = { text: 'text', log: 'log', gif: 'gif' };
 const commentObj = (content, userName, type, keyword) => (
   Object.assign({}, { content, userName, type, keyword })
@@ -36,82 +32,33 @@ const commandType = { giphy: '/giphy ' };
 class App extends ReactBaseComponent {
   constructor(props) {
     super(props);
-    this.state = {
-      playing: true,
-      volume: 0.8,
-      startTime: 0,
-      played: 0,
-      loaded: 0,
-      duration: 0,
-      seeking: false,
-      isSearchActive: false,
-      playingVideo: '',
-      searchText: '',
-      commentText: '',
-      searchResult: [],
-      searchResultNum: '',
-      displayName: '',
-      mailAddressForSignIn: '',
-      mailAddressForSignUp: '',
-      passwordForSignIn: '',
-      passwordForSignUp: '',
-      que: [],
-      comments: [],
-      users: [],
-      currentUser: defaultCurrentUser,
-    };
-
-    this.bind('onChangeText', 'videoSearch', 'setPlayingVideo', 'notification', 'setGifUrl');
+    this.bind('notification', 'setGifUrl');
     this.bind('onKeyPressForSearch', 'onKeyPressForComment');
-    this.bind('onClickSetQue', 'onClickDeleteQue');
-    this.bind('onClickSignUp', 'onClickSignOut', 'onClickSignIn');
+    this.bind('onClickSetQue', 'onClickSignUp', 'onClickSignOut', 'onClickSignIn');
     // For YouTube Player
-    this.bind('playPause', 'stop', 'setVolume',
-    'onSeekMouseDown', 'onSeekMouseUp', 'onSeekChange', 'onConfigSubmit');
-    this.bind('onEnded', 'onPlay', 'onProgress', 'onReady');
-  }
-
-  setLoginUser(user) {
-    const { displayName, photoURL } = user;
-    this.setState({
-      currentUser: Object.assign({}, this.state.currentUser,
-        { name: displayName, photoURL, isLogin: true }
-      ),
-    });
-  }
-
-  setLoginUserForSignUp(user, displayName) {
-    const { photoURL } = user;
-    this.setState({
-      currentUser: Object.assign({}, this.state.currentUser,
-        { name: displayName, photoURL, isLogin: true }
-      ),
-    });
+    this.bind('onSeekMouseUp', 'onProgress');
   }
 
   componentWillMount() {
+    firebaseAuth.onAuthStateChanged((user) => {
+      // if (user) { this.props.appActions.setUser(user, true); }
+      if (user) { this.props.appActions.setDefaultUser(); }
+    });
     SyncStates.forEach((obj) => {
       const { state, asArray } = obj;
-      base.bindToState(state, { context: this, state, asArray });
-    });
-    firebaseAuth.onAuthStateChanged((user) => {
-      if (user) {
-        // User is signed in.
-        this.setLoginUser(user);
-      }
+      base.fetch(state, {
+        context: this, asArray,
+        then(data) { this.props.appActions.fetchSyncState(state, data); },
+      });
     });
   }
 
   componentDidMount() {
-    SyncStates.forEach((obj) => {
-      const { state, asArray } = obj;
-      base.syncState(state, { context: this, state, asArray });
-    });
     base.listenTo('startTime', {
       context: this,
       asArray: false,
       then(startTime) {
-        this.setState({ played: startTime, seeking: false });
+        this.props.appActions.changePlayed(startTime);
         this.player.seekTo(startTime);
       },
     });
@@ -128,11 +75,10 @@ class App extends ReactBaseComponent {
   }
 
   onClickSignUp() {
-    const { mailAddressForSignUp, passwordForSignUp, displayName } = this.state;
+    const { mailAddressForSignUp, passwordForSignUp, displayName } = this.props.app;
     firebaseAuth.createUserWithEmailAndPassword(mailAddressForSignUp, passwordForSignUp)
       .then((user) => {
         user.updateProfile({ displayName });
-        this.setLoginUserForSignUp(user, displayName);
       })
       .catch((error) => {
         console.log(error.code);
@@ -140,16 +86,17 @@ class App extends ReactBaseComponent {
       });
     firebaseAuth.onAuthStateChanged((user) => {
       if (user) {
-          // User is signed in.
-        this.setLoginUserForSignUp(user, displayName);
+        this.props.appActions.setUser({ name: displayName, photoURL: user.photoURL }, true);
       }
     });
   }
 
   onClickSignIn() {
-    const { mailAddressForSignIn, passwordForSignIn } = this.state;
+    const { mailAddressForSignIn, passwordForSignIn } = this.props.app;
     firebaseAuth.signInWithEmailAndPassword(mailAddressForSignIn, passwordForSignIn)
-      .then((user) => this.setLoginUser(user))
+      .then((user) => {
+        this.props.appActions.setUser({ name: user.displayName, photoURL: user.photoURL }, true);
+      })
       .catch((error) => {
         console.log(error.code);
         console.log(error.message);
@@ -157,97 +104,36 @@ class App extends ReactBaseComponent {
   }
 
   onClickSignOut() {
-    firebaseAuth.signOut()
-     .then(() => this.setState({ currentUser: defaultCurrentUser }));
-  }
-
-  playPause() {
-    this.setState({ playing: !this.state.playing, startTime: this.state.played });
-  }
-
-  stop() {
-    if (this.state.que.length > 0) {
-      this.setPlayingVideo(this.state.que[0]);
-    } else {
-      this.setState({ playing: false, playingVideo: '' });
-    }
-  }
-
-  setVolume(e) {
-    this.setState({ volume: parseFloat(e.target.value) });
-  }
-
-  onSeekMouseDown() {
-    this.setState({ seeking: true });
+    firebaseAuth.signOut().then(() => this.props.appActions.setDefaultUser());
   }
 
   onSeekMouseUp(e) {
-    this.setState({ seeking: false, startTime: parseFloat(e.target.value) });
-    this.player.seekTo(parseFloat(e.target.value));
-  }
-
-  onSeekChange(e) {
-    this.setState({ played: parseFloat(e.target.value) });
-  }
-
-  onProgress(state) {
-    if (!this.state.seeking) { this.setState(state); }
-  }
-
-  onConfigSubmit() {
-    let config;
-    try {
-      config = JSON.parse(this.configInput.value);
-    } catch (error) {
-      config = {};
-      console.error('Error setting config:', error);
-    }
-    this.setState(config);
+    const played = parseFloat(e.target.value);
+    this.props.appActions.seekUp(played);
+    this.player.seekTo(played);
   }
 
   notification(title, option) {
     const notification = new Notification(
-      `${title} (${this.state.que.length + 1} remained)`,
+      `${title} (${this.props.app.que.length + 1} remained)`,
       { body: option.body, icon: option.icon, silent: true }
     );
     return notification;
   }
 
-  setPlayingVideo(video) {
-    this.setState({
-      playing: true,
-      playingVideo: video,
-      startTime: 0,
-      que: this.state.que.filter((item) => item.key !== video.key),
-      comments: [...this.state.comments, commentObj(`# ${video.title}`, '', CommentType.log, '')],
-    });
-  }
-
-  onPlay(video) {
-    this.setState({ playing: true });
-    this.notification('Now Playing♪', { body: video.title, icon: video.thumbnail.url });
-  }
-
-  onEnded() {
-    if (this.state.que.length > 0) {
-      this.setPlayingVideo(this.state.que[0]);
-    } else {
-      this.setState({ playingVideo: '', startTime: 0 });
-    }
-  }
-
-  onReady() {
-    this.setState({ playing: true });
-  }
-
-  onClickSetPlayingVideo(video) {
-    this.setPlayingVideo(video);
-  }
-
   onKeyPressForSearch(e) {
     if (e.which !== 13) return false;
     e.preventDefault();
-    this.videoSearch();
+    const searchFunc = (error, result) => {
+      if (error) {
+        console.log(error);
+      } else {
+        this.props.appActions.setSearchResult(result);
+      }
+    };
+    const youTubeNode = new YouTubeNode();
+    youTubeNode.setKey(YOUTUBE_API_KEY);
+    youTubeNode.search(this.props.app.searchText, 50, (error, result) => searchFunc(error, result));
     return true;
   }
 
@@ -255,35 +141,30 @@ class App extends ReactBaseComponent {
     if (e.which !== 13) return false;
     if (e.target.value === '') return false;
     e.preventDefault();
-    const isGif = e.target.value.includes(commandType.giphy);
+    const commentText = e.target.value;
+    const isGif = commentText.includes(commandType.giphy);
     if (isGif) {
-      this.setGifUrl(e.target.value);
+      this.setGifUrl(commentText);
     } else {
-      const comment = commentObj(e.target.value, this.state.currentUser.name, CommentType.text, '');
-      this.setState({ comments: [...this.state.comments, comment], commentText: '' });
+      const comment = commentObj(
+        commentText,
+        this.props.app.currentUser.name,
+        CommentType.text,
+        ''
+      );
+      this.props.appActions.addComment(comment);
     }
     return true;
   }
 
   onClickSetQue(video) {
-    const { que, currentUser } = this.state;
+    const { que, currentUser, playingVideo } = this.props.app;
     const targetVideo = videoObject(video, currentUser.name);
-    if (que.length === 0 && this.state.playingVideo === '') {
-      this.setState({ playingVideo: targetVideo });
+    if (que.length === 0 && playingVideo === '') {
+      this.props.appActions.setPlayingVideo(targetVideo);
     } else {
-      this.setState({ que: [...que, targetVideo] });
+      this.props.appActions.addVideo(targetVideo);
     }
-  }
-
-  onClickDeleteQue(video) {
-    this.setState({ que: this.state.que.filter((item) => item.key !== video.key) });
-  }
-
-  onChangeText(type, value) {
-    if (type === 'searchText') {
-      this.setState({ isSearchActive: value.length >= 1 });
-    }
-    this.setState({ [type]: value });
   }
 
   setGifUrl(keyword) {
@@ -291,38 +172,19 @@ class App extends ReactBaseComponent {
     const giphyApp = giphy({ apiKey: 'dc6zaTOxFJmzC' });
     giphyApp.random(key).then((res) => {
       const imageUrl = res.data.fixed_height_downsampled_url;
-      const comment = commentObj(imageUrl, this.state.currentUser.name, CommentType.gif, key);
-      this.setState({ comments: [...this.state.comments, comment], commentText: '' });
+      const comment = commentObj(imageUrl, this.props.app.currentUser.name, CommentType.gif, key);
+      this.props.appActions.addComment(comment);
     });
   }
 
-  videoSearch() {
-    const youTubeNode = new YouTubeNode();
-    const searchResultObj = (result) => ({
-      videoId: result.id.videoId,
-      title: result.snippet.title,
-      thumbnail: result.snippet.thumbnails.default,
-    });
-    youTubeNode.setKey(YOUTUBE_API_KEY);
-    youTubeNode.search(this.state.searchText, 50,
-    (error, result) => {
-      if (error) {
-        // console.log(error);
-      } else {
-        this.setState({
-          searchResultNum: result.items.length,
-          searchResult: result.items.map((item) => searchResultObj(item)),
-        });
-      }
-    });
+  onProgress(state) {
+    this.props.appActions.progress(state);
   }
 
   render() {
-    const { playing, volume, played, loaded } = this.state;
-    const { soundcloudConfig, vimeoConfig, youtubeConfig, fileConfig } = this.state;
-    const { playingVideo, currentUser } = this.state;
-    const { isLogin, name, photoURL } = currentUser;
-    const isSetPlayingVideo = playingVideo !== '';
+    const { app, appActions } = this.props;
+    const { isLogin, name, photoURL } = app.currentUser;
+    const isSetPlayingVideo = app.playingVideo !== '';
 
     const headerForNotLogin = (
       <div className="none">
@@ -331,24 +193,24 @@ class App extends ReactBaseComponent {
             className="comment-input"
             type="text"
             placeholder="user name"
-            onChange={(e) => this.onChangeText('displayName', e.target.value)}
-            value={this.state.displayName}
+            onChange={(e) => appActions.changeText('displayName', e.target.value)}
+            value={app.displayName}
           >
           </input>
           <input
             className="comment-input"
             type="text"
             placeholder="mail address"
-            onChange={(e) => this.onChangeText('mailAddressForSignUp', e.target.value)}
-            value={this.state.mailAddressForSignUp}
+            onChange={(e) => appActions.changeText('mailAddressForSignUp', e.target.value)}
+            value={app.mailAddressForSignUp}
           >
           </input>
           <input
             className="comment-input"
             type="text"
             placeholder="password"
-            onChange={(e) => this.onChangeText('passwordForSignUp', e.target.value)}
-            value={this.state.passwordForSignUp}
+            onChange={(e) => appActions.changeText('passwordForSignUp', e.target.value)}
+            value={app.passwordForSignUp}
           >
           </input>
           <button onClick={this.onClickSignUp}>Sign Up</button>
@@ -358,16 +220,16 @@ class App extends ReactBaseComponent {
             className="comment-input"
             type="text"
             placeholder="mail address"
-            onChange={(e) => this.onChangeText('mailAddressForSignIn', e.target.value)}
-            value={this.state.mailAddressForSignIn}
+            onChange={(e) => appActions.changeText('mailAddressForSignIn', e.target.value)}
+            value={app.mailAddressForSignIn}
           >
           </input>
           <input
             className="comment-input"
             type="text"
             placeholder="password"
-            onChange={(e) => this.onChangeText('passwordForSignIn', e.target.value)}
-            value={this.state.passwordForSignIn}
+            onChange={(e) => appActions.changeText('passwordForSignIn', e.target.value)}
+            value={app.passwordForSignIn}
           >
           </input>
           <button onClick={this.onClickSignIn}>Sign In</button>
@@ -393,19 +255,19 @@ class App extends ReactBaseComponent {
         <input
           className={classNames(
             'form-search',
-            { 'is-search-active': this.state.isSearchActive },
+            { 'is-search-active': app.isSearchActive },
           )}
           type="text"
           placeholder="Search videos"
-          onChange={(e) => this.onChangeText('searchText', e.target.value)}
+          onChange={(e) => appActions.changeSearchText(e.target.value)}
           onKeyPress={this.onKeyPressForSearch}
-          value={this.state.searchText}
+          value={app.searchText}
         >
         </input>
       </header>
     );
 
-    const searchResultNode = this.state.searchResult.map((result, i) => (
+    const searchResultNode = app.searchResult.map((result, i) => (
       <li
         key={i}
         className="list-group-item"
@@ -426,11 +288,11 @@ class App extends ReactBaseComponent {
       </li>
     ));
 
-    const queNode = this.state.que.map((video, i) => (
+    const queNode = app.que.map((video, i) => (
       <li key={i} className="list-group-item">
         <div
           className="list-group-item__click"
-          onClick={() => this.onClickSetPlayingVideo(video)}
+          onClick={() => appActions.setPlayingVideo(video)}
         >
           <img
             className="list-group-item__thumbnail"
@@ -442,15 +304,12 @@ class App extends ReactBaseComponent {
             <p className="list-group-item__name">added by {video.userName}</p>
           </div>
         </div>
-        <div
-          className="list-group-item__close"
-          onClick={() => this.onClickDeleteQue(video)}
-        >
+        <div className="list-group-item__close" onClick={() => appActions.deleteVideo(video, i)}>
         </div>
       </li>
     ));
 
-    const commentsNode = this.state.comments.map((comment, i) => {
+    const commentsNode = app.comments.map((comment, i) => {
       switch (comment.type) {
         case CommentType.text:
           return (
@@ -497,22 +356,22 @@ class App extends ReactBaseComponent {
               className="react-player"
               width={"100%"}
               height={"100%"}
-              url={youtubeUrl(playingVideo.videoId)}
-              playing={playing}
-              volume={volume}
-              soundcloudConfig={soundcloudConfig}
-              vimeoConfig={vimeoConfig}
-              youtubeConfig={youtubeConfig}
-              fileConfig={fileConfig}
-              onReady={this.onReady}
+              url={youtubeUrl(app.playingVideo.videoId)}
+              playing={app.playing}
+              volume={app.volume}
+              soundcloudConfig={app.soundcloudConfig}
+              vimeoConfig={app.vimeoConfig}
+              youtubeConfig={app.youtubeConfig}
+              fileConfig={app.fileConfig}
+              onReady={() => appActions.play()}
               onStart={() => console.log('onStart')}
-              onPlay={() => this.onPlay(playingVideo)}
-              onPause={() => this.setState({ playing: false })}
+              onPlay={() => appActions.play()}
+              onPause={() => appActions.pause(app.played)}
               onBuffer={() => console.log('onBuffer')}
-              onEnded={this.onEnded}
+              onEnded={() => appActions.setPlayingVideo(app.que[0])}
               onError={(e) => console.log('onError', e)}
               onProgress={this.onProgress}
-              onDuration={(duration) => this.setState({ duration })}
+              onDuration={(duration) => appActions.changeValueWithKey('duration', duration)}
             />
           </div>
 
@@ -525,9 +384,9 @@ class App extends ReactBaseComponent {
               className="comment-input"
               type="text"
               placeholder="type comment"
-              onChange={(e) => this.onChangeText('commentText', e.target.value)}
+              onChange={(e) => appActions.changeText('commentText', e.target.value)}
               onKeyPress={this.onKeyPressForComment}
-              value={this.state.commentText}
+              value={app.commentText}
             >
             </input>
           </div>
@@ -535,13 +394,13 @@ class App extends ReactBaseComponent {
           <div
             className={classNames(
               'display-control',
-              { 'is-search-active': this.state.isSearchActive },
+              { 'is-search-active': app.isSearchActive },
             )}
           >
             {/* Play list */}
             <div className="display-list">
               <p className="list-group-title">
-                Up Coming <span className="list-group-title__number">{this.state.que.length}</span>
+                Up Coming <span className="list-group-title__number">{app.que.length}</span>
               </p>
               <ul className="list-group">
                 {queNode}
@@ -552,7 +411,7 @@ class App extends ReactBaseComponent {
             <div className="display-search">
               <p className="list-group-title">
                 search for
-                <span className="list-group-title__number">{this.state.searchText}</span>
+                <span className="list-group-title__number">{app.searchText}</span>
               </p>
               <ul className="list-group">
                 {searchResultNode}
@@ -568,16 +427,16 @@ class App extends ReactBaseComponent {
           <div className="play-controll">
             <button
               className={classNames(
-                { 'play-controll__pause': playing },
-                { 'play-controll__play': !playing },
+                { 'play-controll__pause': app.playing },
+                { 'play-controll__play': !app.playing },
               )}
-              onClick={this.playPause}
+              onClick={() => appActions.playPause(app.playing)}
             >
               &nbsp;
             </button>
             <button
               className="play-controll__stop"
-              onClick={this.stop}
+              onClick={() => appActions.setPlayingVideo(app.que[0])}
             >&nbsp;</button>
           </div>
 
@@ -585,37 +444,35 @@ class App extends ReactBaseComponent {
             {
               isSetPlayingVideo &&
                 <p className="progress-box__ttl">
-                  {playingVideo.title} {playingVideo.displayName}
+                  {app.playingVideo.title} {app.playingVideo.displayName}
                 </p>
             }
             {
               !isSetPlayingVideo &&
                 <p className="progress-box__ttl">
-                  <span className="header-bar__text--message">
-                    There're no videos to play.
-                  </span>
+                  <span className="header-bar__text--message">There're no videos to play.</span>
                 </p>
             }
             <div className="progress-bar">
               <input
                 className="progress-bar__seek"
                 type="range" min={0} max={1} step="any"
-                value={played}
-                onMouseDown={this.onSeekMouseDown}
-                onChange={this.onSeekChange}
+                value={app.played}
+                onMouseDown={appActions.seekDown}
+                onChange={(e) => appActions.changePlayed(parseFloat(e.target.value))}
                 onMouseUp={this.onSeekMouseUp}
               />
               <div
                 className="progress-bar__played"
-                style={{ width: `${100 * played}%` }}
+                style={{ width: `${100 * app.played}%` }}
               ></div>
               <div
                 className="progress-bar__loaded"
-                style={{ width: `${100 * loaded}%` }}
+                style={{ width: `${100 * app.loaded}%` }}
               ></div>
             </div>
             <div className="progress-box__status">
-              <p>played {played.toFixed(3)} / loaded {loaded.toFixed(3)}</p>
+              <p>played {app.played.toFixed(3)} / loaded {app.loaded.toFixed(3)}</p>
             </div>
           </div>
 
@@ -626,7 +483,12 @@ class App extends ReactBaseComponent {
             <div className="volume-box__range-wrap">
               <input
                 className="volume-box__range"
-                type="range" min={0} max={1} step="any" value={volume} onChange={this.setVolume}
+                type="range"
+                min={0}
+                max={1}
+                step="any"
+                value={app.volume}
+                onChange={(e) => appActions.changeVolume(e.target.value)}
               />
             </div>
           </div>
