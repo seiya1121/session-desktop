@@ -7,7 +7,8 @@ const DEBUG = !process.argv.includes('--release');
 const distPath = (assetType) => path.resolve(__dirname, `app/dist/${assetType}`);
 
 const Scripts = [
-  { key: 'app', file: './app.jsx' },
+  { key: 'app', file: './app.js' },
+  { key: 'appComponent', file: './components/app.jsx' },
 ];
 
 const entryForScripts = {};
@@ -16,7 +17,7 @@ Scripts.forEach(script => Object.assign(entryForScripts, { [script.key]: [script
 
 const config = {
   cache: DEBUG,
-  context: `${__dirname}/app/components`,
+  context: `${__dirname}/app`,
   entry: entryForScripts,
   output: {
     path: distPath('scripts'),
