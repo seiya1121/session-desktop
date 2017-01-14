@@ -29,7 +29,9 @@ const PlayingVideoStatusText = {
 };
 const CommentType = { text: 'text', log: 'log', gif: 'gif' };
 
-const commentObj = (content, userName, type) => Object.assign({}, { content, userName, type });
+const commentObj = (content, userName, type, keyword) => (
+  Object.assign({}, { content, userName, type, keyword })
+);
 const commandType = { giphy: '/giphy ' };
 
 class App extends ReactBaseComponent {
@@ -286,7 +288,7 @@ class App extends ReactBaseComponent {
     const giphyApp = giphy({ apiKey: 'dc6zaTOxFJmzC' });
     giphyApp.random(key).then((res) => {
       const imageUrl = res.data.fixed_height_downsampled_url;
-      const comment = commentObj(imageUrl, this.state.currentUser.name, CommentType.gif);
+      const comment = commentObj(imageUrl, this.state.currentUser.name, CommentType.gif, key);
       this.setState({ comments: [...this.state.comments, comment], commentText: '' });
     });
   }
@@ -474,6 +476,7 @@ class App extends ReactBaseComponent {
         case CommentType.gif:
           return (
             <li key={i} className="comments-stream__item">
+              <p>{comment.keyword}</p>
               <img src={comment.content} alt=""></img>
               <div className="comment-author">
                 {comment.userName}
