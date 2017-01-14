@@ -406,7 +406,10 @@ class App extends ReactBaseComponent {
         {(isLogin) ? headerForLogedin : headerForNotLogin}
 
         <input
-          className="form-search"
+          className={classNames(
+            'form-search',
+            { 'is-search-active': this.state.isSearchActive },
+          )}
           type="text"
           placeholder="Search videos"
           onChange={(e) => this.onChangeText('searchText', e.target.value)}
@@ -544,7 +547,12 @@ class App extends ReactBaseComponent {
             </input>
           </div>
 
-          <div className="display-control">
+          <div
+            className={classNames(
+              'display-control',
+              { 'is-search-active': this.state.isSearchActive },
+            )}
+          >
             {/* Play list */}
             <div className="display-list">
               <p className="list-group-title">
