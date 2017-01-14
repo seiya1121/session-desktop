@@ -120,7 +120,8 @@ input {
   box-sizing: border-box;
   transition: .2s;
 
-  &:focus {
+  &:focus,
+  &.is-search-active {
     color: $color-black;
     background: $color-white;
     width: calc( 30% - 40px );
@@ -188,6 +189,8 @@ input {
   }
 
   .comment-input {
+    -webkit-app-region: no-drag;
+
     border: none;
     box-sizing: border-box;
     padding: 15px;
@@ -208,18 +211,19 @@ input {
   width: 60%;
   height: 100%;
   position: absolute;
-  right: 0;//  -60%; // default変更
+  right: -60%;
   top: 0;
 
   background: transparentize($color-black, .4);
 
   transition: .5s;
 
-  &.state-1 {
+  &.is-list {
     right: -30%;
   }
 
-  &.state-2 {
+  &.is-search-active,
+  &.is-list.is-search-active {
     right: 0;
   }
 }
