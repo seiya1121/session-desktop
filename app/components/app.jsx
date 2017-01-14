@@ -46,6 +46,7 @@ class App extends ReactBaseComponent {
       loaded: 0,
       duration: 0,
       seeking: false,
+      isSearchActive: false,
       playingVideo: '',
       searchText: '',
       commentText: '',
@@ -281,6 +282,9 @@ class App extends ReactBaseComponent {
   }
 
   onChangeText(type, value) {
+    if (type === 'searchText') {
+      this.setState({ isSearchActive: value.length >= 1 });
+    }
     this.setState({ [type]: value });
   }
 
