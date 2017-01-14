@@ -28,7 +28,6 @@ const PlayingVideoStatusText = {
   noVideos: "There're no videos to play.",
 };
 const CommentType = { text: 'text', log: 'log', gif: 'gif' };
-
 const commentObj = (content, userName, type, keyword) => (
   Object.assign({}, { content, userName, type, keyword })
 );
