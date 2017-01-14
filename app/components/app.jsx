@@ -1,6 +1,8 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import ReactBaseComponent from './reactBaseComponent';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as AppActions from '../actions/app';
 import { YOUTUBE_API_KEY } from '../config/apiKey';
 import { base, firebaseAuth } from '../config/firebaseApp';
 import YouTubeNode from 'youtube-node';
@@ -634,4 +636,15 @@ class App extends ReactBaseComponent {
   }
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+App.propTypes = {
+  app: React.PropTypes.object,
+  appActions: React.PropTypes.object,
+};
+
+const mapStateToProps = (state) => ({ app: state.app });
+
+const mapDispatchToProps = (dispatch) => ({
+  appActions: bindActionCreators(AppActions, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
