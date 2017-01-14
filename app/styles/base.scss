@@ -107,6 +107,8 @@ input {
 // search
 
 .form-search{
+  -webkit-app-region: no-drag;
+      
   color: $color-white;
   position: absolute;
   background: $color-black;
