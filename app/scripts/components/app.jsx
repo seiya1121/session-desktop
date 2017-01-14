@@ -411,20 +411,22 @@ class App extends ReactBaseComponent {
     );
 
     const searchResultNode = this.state.searchResult.map((result, i) => (
-      <ul key={i} className="list-group" onClick={() => this.onClickSetQue(result)}>
-        <li className="list-group-item">
-          <img
-            className="img-circle"
-            src={result.thumbnail.url}
-            width="32"
-            height="32"
-            alt=""
-          ></img>
-          <div className="media-body">
-            <strong>{result.title}</strong>
-          </div>
-        </li>
-      </ul>
+      <div className="display-search">
+        <ul key={i} className="list-group" onClick={() => this.onClickSetQue(result)}>
+          <li className="list-group-item">
+            <img
+              className="img-circle"
+              src={result.thumbnail.url}
+              width="32"
+              height="32"
+              alt=""
+            ></img>
+            <div className="media-body">
+              <strong>{result.title}</strong>
+            </div>
+          </li>
+        </ul>
+      </div>
     ));
 
     const queNode = this.state.que.map((video, i) => (
@@ -532,20 +534,19 @@ class App extends ReactBaseComponent {
             </input>
           </div>
 
-          {/* Play list */}
-          <div>
-            <h5 className="nav-group-title">
-              <span className="icon icon-music"></span>
-              Up Coming({this.state.que.length} videos}
-            </h5>
-            <ul className="list-group">
-              {queNode}
-            </ul>
-          </div>
+          <div className="display-control">
+            {/* Play list */}
+            <div className="display-list">
+              <h5 className="nav-group-title">
+                <span className="icon icon-music"></span>
+                Up Coming({this.state.que.length} videos}
+              </h5>
+              <ul className="list-group">
+                {queNode}
+              </ul>
+            </div>
 
-          {/* Search */}
-          <div>
-            <h5 className="nav-group-title">Search Result</h5>
+            {/* Search */}
             {searchResultNode}
           </div>
 

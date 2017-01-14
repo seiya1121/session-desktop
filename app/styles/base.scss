@@ -119,7 +119,7 @@ input {
   &:focus {
     color: $color-black;
     background: $color-white;
-    width: 30%;
+    width: calc( 30% - 20px );
     transition: .5s;
   }
 }
@@ -196,6 +196,47 @@ input {
     height: 3em;
     font-size: 12px;
   }
+}
+
+// include .display-search and .display-list
+
+.display-control {
+  width: 60%;
+  height: 100%;
+  position: absolute;
+  right: -60%; // default変更
+  top: 0;
+
+  background: transparentize($color-black, .4);
+
+  transition: .5s;
+
+  &.state-1 {
+    right: -30%;
+  }
+
+  &.state-2 {
+    right: 0;
+  }
+}
+
+%display-control__child {
+  box-sizing: border-box;
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  overflow: auto;
+  padding: 20px;
+}
+
+.display-list {
+  @extend %display-control__child;
+  right: 50%;
+}
+
+.display-search {
+  @extend %display-control__child;
+  right: 0;
 }
 
 /* footer の要素
