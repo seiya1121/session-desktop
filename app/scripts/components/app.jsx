@@ -536,10 +536,9 @@ class App extends ReactBaseComponent {
           <div className="display-control">
             {/* Play list */}
             <div className="display-list">
-              <h5 className="nav-group-title">
-                <span className="icon icon-music"></span>
-                Up Coming({this.state.que.length} videos}
-              </h5>
+              <p className="list-group-title">
+                Up Coming <span className="list-group-title__number">{this.state.que.length}</span>
+              </p>
               <ul className="list-group">
                 {queNode}
               </ul>
@@ -547,6 +546,10 @@ class App extends ReactBaseComponent {
 
             {/* Search */}
             <div className="display-search">
+              <p className="list-group-title">
+                search for
+                <span className="list-group-title__number">{this.state.searchText}</span>
+              </p>
               <ul className="list-group">
                 {searchResultNode}
               </ul>

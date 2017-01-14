@@ -248,6 +248,21 @@ input {
   padding: 0;
 }
 
+.list-group-title {
+  font-size: 12px;
+  color: $color-white;
+
+  &__number {
+    height: 2em;
+    padding: 2px 8px;
+    border-radius: 2em;
+    background: $color-key;
+    color: $color-white;
+    position: relative;
+    left: 10px;
+  }
+}
+
 .list-group-item {
   clear: both;
   padding: 15px 0;
@@ -255,6 +270,10 @@ input {
   width: 100%;
   overflow: hidden;
   cursor: pointer;
+
+  &:hover {
+    background: transparentize($color-white, .8);
+  }
 
   &__thumbnail {
     width: 30%;
