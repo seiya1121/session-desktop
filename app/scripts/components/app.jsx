@@ -397,6 +397,16 @@ class App extends ReactBaseComponent {
         }
         {/* ログイン機能、レイアウト考える上でめんどいから一旦非表示 */}
         {(isLogin) ? headerForLogedin : headerForNotLogin}
+
+        <input
+          className="form-search"
+          type="text"
+          placeholder="Search videos"
+          onChange={(e) => this.onChangeText('searchText', e.target.value)}
+          onKeyPress={this.onKeyPressForSearch}
+          value={this.state.searchText}
+        >
+        </input>
       </header>
     );
 
@@ -522,6 +532,23 @@ class App extends ReactBaseComponent {
             </input>
           </div>
 
+          {/* Play list */}
+          <div>
+            <h5 className="nav-group-title">
+              <span className="icon icon-music"></span>
+              Up Coming({this.state.que.length} videos}
+            </h5>
+            <ul className="list-group">
+              {queNode}
+            </ul>
+          </div>
+
+          {/* Search */}
+          <div>
+            <h5 className="nav-group-title">Search Result</h5>
+            {searchResultNode}
+          </div>
+
         </div>
 
         <div className="footer-bar">
@@ -592,37 +619,6 @@ class App extends ReactBaseComponent {
               />
             </div>
           </div>
-        </div>
-
-        {/* Play list */}
-        <div>
-          <h5 className="nav-group-title">
-            <span className="icon icon-music"></span>
-            Up Coming({this.state.que.length} videos}
-          </h5>
-          <ul className="list-group">
-            {queNode}
-          </ul>
-        </div>
-
-        {/* Search */}
-        <div>
-          <ul className="list-group">
-            <li className="list-group-header">
-              <span className="icon icon-search"></span>
-              <input
-                className="form-control"
-                type="text"
-                placeholder="Search for something you want"
-                onChange={(e) => this.onChangeText('searchText', e.target.value)}
-                onKeyPress={this.onKeyPressForSearch}
-                value={this.state.searchText}
-              >
-              </input>
-            </li>
-          </ul>
-          <h5 className="nav-group-title">Search Result</h5>
-          {searchResultNode}
         </div>
       </div>
     );
