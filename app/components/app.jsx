@@ -414,10 +414,13 @@ class App extends ReactBaseComponent {
     );
 
     const searchResultNode = this.state.searchResult.map((result, i) => (
-      <li key={i} className="list-group-item">
+      <li
+        key={i}
+        className="list-group-item"
+        onClick={() => this.onClickSetQue(result)}
+      >
         <div
           className="list-group-item__click"
-          onClick={() => this.onClickSetQue(result)}
         >
           <img
             className="list-group-item__thumbnail"
