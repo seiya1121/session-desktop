@@ -12,7 +12,7 @@ const Scripts = [
 ];
 
 const Styles = [
-  { key: 'base', file: './base.css' },
+  { key: 'base', file: './base.scss' },
   { key: 'normalize', file: './normalize.css' },
   { key: 'test', file: './test.scss' },
 ];
