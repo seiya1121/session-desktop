@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactBaseComponent from './reactBaseComponent';
-import { YOUTUBE_API_KEY } from '../scripts/secret';
-import { base, firebaseAuth } from '../scripts/firebaseApp';
+import { YOUTUBE_API_KEY } from '../config/apiKey';
+import { base, firebaseAuth } from '../config/firebaseApp';
 import YouTubeNode from 'youtube-node';
 import ReactPlayer from 'react-player';
 import classNames from 'classNames';
@@ -220,7 +220,7 @@ class App extends ReactBaseComponent {
       playingVideo: video,
       startTime: 0,
       que: this.state.que.filter((item) => item.key !== video.key),
-      comments: [...this.state.comments, commentObj(`# ${video.title}`, '', CommentType.log), ''],
+      comments: [...this.state.comments, commentObj(`# ${video.title}`, '', CommentType.log, '')],
     });
   }
 

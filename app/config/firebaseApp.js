@@ -1,5 +1,5 @@
 import firebase from 'firebase';
-import { FIREBASE_CONFIG } from './secret.js';
+import { FIREBASE_CONFIG } from './apiKey.js';
 import Rebase from 're-base';
 
 export const firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
