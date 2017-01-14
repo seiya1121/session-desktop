@@ -25,10 +25,6 @@ const videoObject = (video, userName) => Object.assign({}, video, { userName });
 const defaultCurrentUser = Object.assign(
   {}, { name: getAnimalName(), photoURL: '', isLogin: false }
 );
-const PlayingVideoStatusText = {
-  playing: 'Now Playing',
-  noVideos: "There're no videos to play.",
-};
 const CommentType = { text: 'text', log: 'log', gif: 'gif' };
 const commentObj = (content, userName, type, keyword) => (
   Object.assign({}, { content, userName, type, keyword })
@@ -389,19 +385,6 @@ class App extends ReactBaseComponent {
 
     const headerNode = (
       <header className="header-bar">
-        {
-          isSetPlayingVideo &&
-            <p className="header-bar__text">
-              <span className="header-bar__text--message">{PlayingVideoStatusText.playing}</span>
-              {playingVideo.title} {playingVideo.displayName}
-            </p>
-        }
-        {
-          !isSetPlayingVideo &&
-            <p className="header-bar__text">
-              <span className="header-bar__text--message">{PlayingVideoStatusText.noVideos}</span>
-            </p>
-        }
         {/* ログイン機能、レイアウト考える上でめんどいから一旦非表示 */}
         {(isLogin) ? headerForLogedin : headerForNotLogin}
 
@@ -607,7 +590,7 @@ class App extends ReactBaseComponent {
               !isSetPlayingVideo &&
                 <p className="progress-box__ttl">
                   <span className="header-bar__text--message">
-                    {PlayingVideoStatusText.noVideos}
+                    There're no videos to play.
                   </span>
                 </p>
             }
