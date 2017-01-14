@@ -1,15 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactBaseComponent from './reactBaseComponent';
-import { YOUTUBE_API_KEY } from '../secret';
-import { base, firebaseAuth } from '../firebaseApp';
+import { YOUTUBE_API_KEY } from '../scripts/secret';
+import { base, firebaseAuth } from '../scripts/firebaseApp';
 import YouTubeNode from 'youtube-node';
 import ReactPlayer from 'react-player';
 import classNames from 'classNames';
-import { getAnimalName } from '../animal';
+import { getAnimalName } from '../scripts/animal';
 import giphy from 'giphy-api';
-import '../../styles/base.scss';
-import '../../styles/normalize.scss';
+import '../styles/base.scss';
+import '../styles/normalize.scss';
 
 const SyncStates = [
   { state: 'que', asArray: true },
@@ -220,7 +220,7 @@ class App extends ReactBaseComponent {
       playingVideo: video,
       startTime: 0,
       que: this.state.que.filter((item) => item.key !== video.key),
-      comments: [...this.state.comments, commentObj(`# ${video.title}`, '', CommentType.log)],
+      comments: [...this.state.comments, commentObj(`# ${video.title}`, '', CommentType.log), ''],
     });
   }
 
@@ -260,7 +260,7 @@ class App extends ReactBaseComponent {
     if (isGif) {
       this.setGifUrl(e.target.value);
     } else {
-      const comment = commentObj(e.target.value, this.state.currentUser.name, CommentType.text);
+      const comment = commentObj(e.target.value, this.state.currentUser.name, CommentType.text, '');
       this.setState({ comments: [...this.state.comments, comment], commentText: '' });
     }
     return true;

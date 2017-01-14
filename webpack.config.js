@@ -16,7 +16,7 @@ Scripts.forEach(script => Object.assign(entryForScripts, { [script.key]: [script
 
 const config = {
   cache: DEBUG,
-  context: `${__dirname}/app/scripts/components`,
+  context: `${__dirname}/app/components`,
   entry: entryForScripts,
   output: {
     path: distPath('scripts'),
