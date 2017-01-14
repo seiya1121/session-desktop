@@ -7,7 +7,7 @@ import { YOUTUBE_API_KEY } from '../config/apiKey';
 import { base, firebaseAuth } from '../config/firebaseApp';
 import YouTubeNode from 'youtube-node';
 import ReactPlayer from 'react-player';
-import classNames from 'classNames';
+import classNames from 'classnames';
 import giphy from 'giphy-api';
 import '../styles/base.scss';
 import '../styles/normalize.scss';
