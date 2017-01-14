@@ -8,6 +8,8 @@ import ReactPlayer from 'react-player';
 import classNames from 'classNames';
 import { getAnimalName } from '../animal';
 import giphy from 'giphy-api';
+import '../../styles/base.scss';
+import '../../styles/normalize.scss';
 
 const SyncStates = [
   { state: 'que', asArray: true },
