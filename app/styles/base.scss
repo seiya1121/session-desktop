@@ -26,6 +26,10 @@ html, body {
   background: $color-black;
 }
 
+li {
+  list-style: none;
+}
+
 * {
 
   &:focus {
@@ -119,7 +123,7 @@ input {
   &:focus {
     color: $color-black;
     background: $color-white;
-    width: calc( 30% - 20px );
+    width: calc( 30% - 40px );
     transition: .5s;
   }
 }
@@ -204,7 +208,7 @@ input {
   width: 60%;
   height: 100%;
   position: absolute;
-  right: -60%; // default変更
+  right: 0;//  -60%; // default変更
   top: 0;
 
   background: transparentize($color-black, .4);
@@ -232,11 +236,62 @@ input {
 .display-list {
   @extend %display-control__child;
   right: 50%;
+  border-right: 1px solid transparentize($color-white, .5);
 }
 
 .display-search {
   @extend %display-control__child;
   right: 0;
+}
+
+.list-group {
+  padding: 0;
+}
+
+.list-group-item {
+  clear: both;
+  padding: 15px 0;
+  border-top: 1px solid transparentize($color-white, .5);
+  width: 100%;
+  overflow: hidden;
+  cursor: pointer;
+
+  &__thumbnail {
+    width: 30%;
+    height: auto;
+    float: left;
+    box-sizing: border-box;
+    border: 1px solid transparentize($color-white, .5);
+  }
+
+  &__body {
+    width: 70%;
+    float: left;
+    padding: 0 0 0 10px;
+    font-size: 12px;
+    box-sizing: border-box;
+  }
+
+  &__name {
+    color: #666666;
+  }
+
+  &__close {
+    float: right;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    line-height: 0;
+    font-size: 0;
+    border: 1px solid $color-white;
+    position: relative;
+
+    &:after {
+      content: " ";
+      height: 10px;
+      border-left: 1px solid $color-white;
+    }
+  }
 }
 
 /* footer の要素

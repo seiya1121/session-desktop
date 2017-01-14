@@ -411,46 +411,45 @@ class App extends ReactBaseComponent {
     );
 
     const searchResultNode = this.state.searchResult.map((result, i) => (
-      <div className="display-search">
-        <ul key={i} className="list-group" onClick={() => this.onClickSetQue(result)}>
-          <li className="list-group-item">
-            <img
-              className="img-circle"
-              src={result.thumbnail.url}
-              width="32"
-              height="32"
-              alt=""
-            ></img>
-            <div className="media-body">
-              <strong>{result.title}</strong>
-            </div>
-          </li>
-        </ul>
-      </div>
+      <li key={i} className="list-group-item">
+        <div
+          className="list-group-item__click"
+          onClick={() => this.onClickSetQue(result)}
+        >
+          <img
+            className="list-group-item__thumbnail"
+            src={result.thumbnail.url}
+            alt=""
+          />
+          <div className="list-group-item__body">
+            <strong>{result.title}</strong>
+          </div>
+        </div>
+      </li>
     ));
 
     const queNode = this.state.que.map((video, i) => (
-      <div key={i}>
-        <li
-          className="slist-group-item"
+      <li key={i} className="list-group-item">
+        <div
+          className="list-group-item__click"
           onClick={() => this.onClickSetPlayingVideo(video)}
         >
           <img
-            className="img-circle media-object pull-left"
+            className="list-group-item__thumbnail"
             src={video.thumbnail.url}
-            width="32"
-            height="32"
             alt=""
-          ></img>
-          <div className="media-body">
+          />
+          <div className="list-group-item__body">
             <strong>{video.title}</strong>
+            <p className="list-group-item__name">added by {video.userName}</p>
           </div>
-          <p>added by {video.userName}</p>
-        </li>
-        <div>
-          <span className="icon icon-cancel" onClick={() => this.onClickDeleteQue(video)}>x</span>
         </div>
-      </div>
+        <div
+          className="list-group-item__close"
+          onClick={() => this.onClickDeleteQue(video)}
+        >
+        </div>
+      </li>
     ));
 
     const commentsNode = this.state.comments.map((comment, i) => {
@@ -547,7 +546,11 @@ class App extends ReactBaseComponent {
             </div>
 
             {/* Search */}
-            {searchResultNode}
+            <div className="display-search">
+              <ul className="list-group">
+                {searchResultNode}
+              </ul>
+            </div>
           </div>
 
         </div>
