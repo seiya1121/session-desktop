@@ -1,4 +1,4 @@
 node_modules
-app/confing/apiKey.js
+app/config/apiKey.js
 firebase-debug.log
 app/dist
