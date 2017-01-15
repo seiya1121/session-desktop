@@ -5,6 +5,18 @@ export const DefaultUser = Object.assign(
   { name: getAnimalName(), photoURL: '', isLogin: false }
 );
 
+export const SyncStates = [
+  { state: 'que', asArray: true },
+  { state: 'users', asArray: true },
+  { state: 'comments', asArray: true },
+  { state: 'playingVideo', asArray: false },
+  { state: 'playing', asArray: false },
+  { state: 'startTime', asArray: false },
+];
+
+export const CommandType = { giphy: '/giphy ' };
+export const CommentType = { text: 'text', log: 'log', gif: 'gif' };
+
 export const InitialState = {
   currentUser: DefaultUser,
   searchResult: [],

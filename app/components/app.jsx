@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as AppActions from '../actions/app';
 import { YOUTUBE_API_KEY } from '../config/apiKey';
+import { SyncStates, CommandType, CommentType } from '../constants/app';
 import { base, firebaseAuth } from '../config/firebaseApp';
 import YouTubeNode from 'youtube-node';
 import ReactPlayer from 'react-player';
@@ -12,22 +13,11 @@ import giphy from 'giphy-api';
 import '../styles/base.scss';
 import '../styles/normalize.scss';
 
-const SyncStates = [
-  { state: 'que', asArray: true },
-  { state: 'users', asArray: true },
-  { state: 'comments', asArray: true },
-  { state: 'playingVideo', asArray: false },
-  { state: 'playing', asArray: false },
-  { state: 'startTime', asArray: false },
-];
-
 const youtubeUrl = (videoId) => `https://www.youtube.com/watch?v=${videoId}`;
 const videoObject = (video, userName) => Object.assign({}, video, { userName });
-const CommentType = { text: 'text', log: 'log', gif: 'gif' };
 const commentObj = (content, userName, type, keyword) => (
   Object.assign({}, { content, userName, type, keyword })
 );
-const commandType = { giphy: '/giphy ' };
 
 class App extends ReactBaseComponent {
   constructor(props) {
@@ -142,7 +132,7 @@ class App extends ReactBaseComponent {
     if (e.target.value === '') return false;
     e.preventDefault();
     const commentText = e.target.value;
-    const isGif = commentText.includes(commandType.giphy);
+    const isGif = commentText.includes(CommandType.giphy);
     if (isGif) {
       this.setGifUrl(commentText);
     } else {
@@ -168,7 +158,7 @@ class App extends ReactBaseComponent {
   }
 
   setGifUrl(keyword) {
-    const key = keyword.replace(commandType.giphy, '');
+    const key = keyword.replace(CommandType.giphy, '');
     const giphyApp = giphy({ apiKey: 'dc6zaTOxFJmzC' });
     giphyApp.random(key).then((res) => {
       const imageUrl = res.data.fixed_height_downsampled_url;
