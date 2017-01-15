@@ -19,7 +19,9 @@ const app = (state = App.InitialState, action) => {
     case App.SET_USER:
       return newState({ currentUser: action.user });
     case App.ADD_COMMENT:
-      return newState({ comments: [...state.comments, action.comment], commentText: '' });
+      return newState({
+        comments: [...state.comments, action.comment], commentText: '', isCommentActive: false,
+      });
     case App.SET_DEFAULT_USER:
       return newState({ currentUser: App.DefaultUser });
     case App.FETCH_SYNC_STATE:

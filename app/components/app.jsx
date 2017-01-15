@@ -185,7 +185,8 @@ class App extends ReactBaseComponent {
     const { app, appActions } = this.props;
     const { isLogin, name, photoURL } = app.currentUser;
     const isSetPlayingVideo = app.playingVideo !== '';
-    const comments = (app.isCommentActive) ? app.comments : app.comments.slice(0, 3);
+    const comments = (app.isCommentActive) ?
+      app.comments : app.comments.slice(app.comments.length - 3, app.comments.length);
 
     const headerForNotLogin = (
       <div className="none">
