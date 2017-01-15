@@ -185,6 +185,7 @@ class App extends ReactBaseComponent {
     const { app, appActions } = this.props;
     const { isLogin, name, photoURL } = app.currentUser;
     const isSetPlayingVideo = app.playingVideo !== '';
+    const comments = (app.isCommentActive) ? app.comments : app.comments.slice(0, 3);
 
     const headerForNotLogin = (
       <div className="none">
@@ -259,7 +260,9 @@ class App extends ReactBaseComponent {
           )}
           type="text"
           placeholder="Search videos"
-          onChange={(e) => appActions.changeSearchText(e.target.value)}
+          onChange={(e) => {
+            appActions.changeTextWithACtive('searchText', e.target.value, 'isSearchActive');
+          }}
           onKeyPress={this.onKeyPressForSearch}
           value={app.searchText}
         >
@@ -309,7 +312,7 @@ class App extends ReactBaseComponent {
       </li>
     ));
 
-    const commentsNode = app.comments.map((comment, i) => {
+    const commentsNode = comments.map((comment, i) => {
       switch (comment.type) {
         case CommentType.text:
           return (
@@ -384,7 +387,9 @@ class App extends ReactBaseComponent {
               className="comment-input"
               type="text"
               placeholder="type comment"
-              onChange={(e) => appActions.changeText('commentText', e.target.value)}
+              onChange={(e) => {
+                appActions.changeTextWithACtive('commentText', e.target.value, 'isCommentActive');
+              }}
               onKeyPress={this.onKeyPressForComment}
               value={app.commentText}
             >
