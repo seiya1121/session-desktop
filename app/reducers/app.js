@@ -19,15 +19,13 @@ const app = (state = App.InitialState, action) => {
     case App.SET_USER:
       return newState({ currentUser: action.user });
     case App.ADD_COMMENT:
-      return newState({
-        comments: [...state.comments, action.comment], commentText: '', isCommentActive: false,
-      });
+      return newState({ commentText: '', isCommentActive: false });
     case App.SET_DEFAULT_USER:
       return newState({ currentUser: App.DefaultUser });
     case App.FETCH_SYNC_STATE:
       return newState({ [action.key]: action.value });
     case App.ADD_VIDEO:
-      return newState({ que: [...state.que, action.video] });
+      return newState({ que: state.que });
     case App.DELETE_VIDEO:
       return newState({ que: state.que.filter((q) => q.key !== action.video.key) });
     case App.PLAY_PAUSE:
@@ -46,10 +44,12 @@ const app = (state = App.InitialState, action) => {
       return newState({ playing: action.playing, played: action.startTime });
     case App.PROGRESS:
       return !state.seeking ? newState(action.playingStatus) : state;
-    case App.SET_COMMENT:
-      return newState({ comments: [...state.comments, action.comment], commentText: '' });
     case App.SET_SEARCH_RESULT:
       return newState({ searchResult: action.result });
+    case App.UPDATE_QUE:
+      return newState({ que: action.que });
+    case App.UPDATE_COMMENTS:
+      return newState({ comments: action.comments });
     default:
       return state;
   }

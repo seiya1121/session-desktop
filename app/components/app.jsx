@@ -54,13 +54,13 @@ class App extends ReactBaseComponent {
     });
     base.listenTo('que', {
       context: this,
-      asArray: false,
-      then(que) {
-        if (typeof que !== 'object') {
-          const addedVideo = que.pop();
-          this.notification('Added♪', { body: addedVideo.title, icon: addedVideo.thumbnail.url });
-        }
-      },
+      asArray: true,
+      then(que) { this.props.appActions.updateQue(que); },
+    });
+    base.listenTo('comments', {
+      context: this,
+      asArray: true,
+      then(comments) { this.props.appActions.updateComments(comments); },
     });
     base.listenTo('playingVideo', {
       context: this,

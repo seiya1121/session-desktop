@@ -13,11 +13,11 @@ export const setPlayingVideo = (video) => {
 export const fetchSyncState = (key, value) => ({ type: App.FETCH_SYNC_STATE, key, value });
 export const addVideo = (video) => {
   push('que', video);
-  return { type: App.ADD_VIDEO, video };
+  return { type: App.ADD_VIDEO };
 };
 export const addComment = (comment) => {
   push('comments', comment);
-  return { type: App.ADD_COMMENT, comment };
+  return { type: App.ADD_COMMENT };
 };
 export const deleteVideo = (video, index) => {
   remove(`que/${index}`);
@@ -71,3 +71,5 @@ export const progress = (state) => {
   const playingStatus = (state.loaded) ? { played, loaded } : { played };
   return { type: App.PROGRESS, playingStatus };
 };
+export const updateQue = (que) => ({ type: App.UPDATE_QUE, que });
+export const updateComments = (comments) => ({ type: App.UPDATE_COMMENTS, comments });
