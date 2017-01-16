@@ -38,7 +38,7 @@ class App extends ReactBaseComponent {
       const { state, asArray } = obj;
       base.fetch(state, {
         context: this, asArray,
-        then(data) { this.props.appActions.fetchSyncState(state, data); },
+        then(data) { this.props.appActions.updateSyncState(state, data); },
       });
     });
   }
@@ -72,9 +72,7 @@ class App extends ReactBaseComponent {
     base.listenTo('playingVideo', {
       context: this,
       asArray: false,
-      then(video) {
-        this.props.appActions.setPlayingVideo(video);
-      },
+      then(video) { this.props.appActions.updatePlayingVideo(video); },
     });
   }
 
@@ -165,9 +163,9 @@ class App extends ReactBaseComponent {
     const { que, currentUser, playingVideo } = this.props.app;
     const targetVideo = videoObject(video, currentUser.name);
     if (que.length === 0 && playingVideo === '') {
-      this.props.appActions.setPlayingVideo(targetVideo);
+      this.props.appActions.postPlayingVideo(targetVideo);
     } else {
-      this.props.appActions.addVideo(targetVideo);
+      this.props.appActions.pushVideo(targetVideo);
     }
   }
 
@@ -188,7 +186,7 @@ class App extends ReactBaseComponent {
   render() {
     const { app, appActions } = this.props;
     const { isLogin, name, photoURL } = app.currentUser;
-    const isSetPlayingVideo = app.playingVideo !== '';
+    const isPostPlayingVideo = app.playingVideo !== '';
     const comments = (app.isCommentActive) ?
       app.comments : app.comments.slice(app.comments.length - 3, app.comments.length);
 
@@ -199,7 +197,7 @@ class App extends ReactBaseComponent {
             className="comment-input"
             type="text"
             placeholder="user name"
-            onChange={(e) => appActions.changeText('displayName', e.target.value)}
+            onChange={(e) => appActions.changeValueWithKey('displayName', e.target.value)}
             value={app.displayName}
           >
           </input>
@@ -207,7 +205,7 @@ class App extends ReactBaseComponent {
             className="comment-input"
             type="text"
             placeholder="mail address"
-            onChange={(e) => appActions.changeText('mailAddressForSignUp', e.target.value)}
+            onChange={(e) => appActions.changeValueWithKey('mailAddressForSignUp', e.target.value)}
             value={app.mailAddressForSignUp}
           >
           </input>
@@ -215,7 +213,7 @@ class App extends ReactBaseComponent {
             className="comment-input"
             type="text"
             placeholder="password"
-            onChange={(e) => appActions.changeText('passwordForSignUp', e.target.value)}
+            onChange={(e) => appActions.changeValueWithKey('passwordForSignUp', e.target.value)}
             value={app.passwordForSignUp}
           >
           </input>
@@ -226,7 +224,7 @@ class App extends ReactBaseComponent {
             className="comment-input"
             type="text"
             placeholder="mail address"
-            onChange={(e) => appActions.changeText('mailAddressForSignIn', e.target.value)}
+            onChange={(e) => appActions.changeValueWithKey('mailAddressForSignIn', e.target.value)}
             value={app.mailAddressForSignIn}
           >
           </input>
@@ -234,7 +232,7 @@ class App extends ReactBaseComponent {
             className="comment-input"
             type="text"
             placeholder="password"
-            onChange={(e) => appActions.changeText('passwordForSignIn', e.target.value)}
+            onChange={(e) => appActions.changeValueWithKey('passwordForSignIn', e.target.value)}
             value={app.passwordForSignIn}
           >
           </input>
@@ -300,7 +298,7 @@ class App extends ReactBaseComponent {
       <li key={i} className="list-group-item">
         <div
           className="list-group-item__click"
-          onClick={() => appActions.setPlayingVideo(video)}
+          onClick={() => appActions.postPlayingVideo(video)}
         >
           <img
             className="list-group-item__thumbnail"
@@ -312,7 +310,7 @@ class App extends ReactBaseComponent {
             <p className="list-group-item__name">added by {video.userName}</p>
           </div>
         </div>
-        <div className="list-group-item__close" onClick={() => appActions.deleteVideo(video, i)}>
+        <div className="list-group-item__close" onClick={() => appActions.removeVideo(i)}>
         </div>
       </li>
     ));
@@ -376,7 +374,7 @@ class App extends ReactBaseComponent {
               onPlay={() => appActions.play()}
               onPause={() => appActions.pause(app.played)}
               onBuffer={() => console.log('onBuffer')}
-              onEnded={() => appActions.setPlayingVideo(app.que[0])}
+              onEnded={() => appActions.postPlayingVideo(app.que[0])}
               onError={(e) => console.log('onError', e)}
               onProgress={this.onProgress}
               onDuration={(duration) => appActions.changeValueWithKey('duration', duration)}
@@ -446,19 +444,19 @@ class App extends ReactBaseComponent {
             </button>
             <button
               className="play-controll__stop"
-              onClick={() => appActions.setPlayingVideo(app.que[0])}
+              onClick={() => appActions.postPlayingVideo(app.que[0])}
             >&nbsp;</button>
           </div>
 
           <div className="progress-box">
             {
-              isSetPlayingVideo &&
+              isPostPlayingVideo &&
                 <p className="progress-box__ttl">
                   {app.playingVideo.title} {app.playingVideo.displayName}
                 </p>
             }
             {
-              !isSetPlayingVideo &&
+              !isPostPlayingVideo &&
                 <p className="progress-box__ttl">
                   <span className="header-bar__text--message">There're no videos to play.</span>
                 </p>

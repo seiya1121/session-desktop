@@ -6,22 +6,21 @@ const post = (stateName, data) => base.post(stateName, { data });
 const remove = (endPoint) => base.remove(endPoint);
 
 // sync系
-export const setPlayingVideo = (video) => {
+export const postPlayingVideo = (video) => {
   post('playingVideo', video);
-  return { type: App.SET_PLAYING_VIDEO, video };
+  return { type: App.POST_PLAYING_VIDEO };
 };
-export const fetchSyncState = (key, value) => ({ type: App.FETCH_SYNC_STATE, key, value });
-export const addVideo = (video) => {
+export const pushVideo = (video) => {
   push('que', video);
-  return { type: App.ADD_VIDEO };
+  return { type: App.PUSH_VIDEO };
 };
 export const addComment = (comment) => {
   push('comments', comment);
   return { type: App.ADD_COMMENT };
 };
-export const deleteVideo = (video, index) => {
+export const removeVideo = (index) => {
   remove(`que/${index}`);
-  return { type: App.DELETE_VIDEO, video };
+  return { type: App.REMOVE_VIDEO };
 };
 export const changePlayed = (played) => {
   post('startTime', played);
@@ -48,7 +47,6 @@ export const playPause = (isPlaying) => {
 export const changeValueWithKey = (key, value) => ({
   type: App.CHANGE_VALUE_WITH_KEY, key, value,
 });
-export const changeText = (textType, text) => ({ type: App.CHANGE_TEXT, textType, text });
 export const changeTextWithACtive = (textType, text, flgType) => ({
   type: App.CHANGE_TEXT_WITH_ACTIVE, textType, text, flgType, value: text.length >= 1,
 });
@@ -71,7 +69,9 @@ export const progress = (state) => {
   const playingStatus = (state.loaded) ? { played, loaded } : { played };
   return { type: App.PROGRESS, playingStatus };
 };
+export const updateSyncState = (key, value) => ({ type: App.UPDATE_SYNC_STATE, key, value });
 export const updateQue = (que) => ({ type: App.UPDATE_QUE, que });
 export const updateComments = (comments) => ({ type: App.UPDATE_COMMENTS, comments });
 export const updatePlayed = (played) => ({ type: App.UPDATE_PLAYED, played });
 export const updatePlaying = (playing) => ({ type: App.UPDATE_PLAYING, playing });
+export const updatePlayingVideo = (video) => ({ type: App.UPDATE_PLAYING_VIDEO, video });

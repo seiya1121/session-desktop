@@ -42,12 +42,11 @@ export const InitialState = {
 };
 
 export const CHANGE_VALUE_WITH_KEY = 'CHANGE_VALUE_WITH_KEY';
-export const CHANGE_TEXT = 'CHANGE_TEXT';
 export const CHANGE_TEXT_WITH_ACTIVE = 'CHANGE_TEXT_WITH_ACTIVE';
-export const SET_PLAYING_VIDEO = 'SET_PLAYING_VIDEO';
+export const POST_PLAYING_VIDEO = 'POST_PLAYING_VIDEO';
 export const SET_USER = 'SET_USER';
-export const ADD_VIDEO = 'ADD_VIDEO';
-export const DELETE_VIDEO = 'DELETE_VIDEO';
+export const PUSH_VIDEO = 'PUSH_VIDEO';
+export const REMOVE_VIDEO = 'REMOVE_VIDEO';
 export const PLAY_PAUSE = 'PLAY_PAUSE';
 export const CHANGE_VOLUME = 'CHANGE_VOLUME';
 export const SEEK_DOWN = 'SEEK_DOWN';
@@ -59,8 +58,10 @@ export const PROGRESS = 'PROGRESS';
 export const SET_DEFAULT_USER = 'SET_DEFAULT_USER';
 export const ADD_COMMENT = 'ADD_COMMENT';
 export const SET_SEARCH_RESULT = 'SET_SEARCH_RESULT';
-export const FETCH_SYNC_STATE = 'FETCH_SYNC_STATE';
+
+export const UPDATE_SYNC_STATE = 'FETCH_SYNC_STATE';
 export const UPDATE_QUE = 'UPDATE_QUE';
 export const UPDATE_COMMENTS = 'UPDATE_COMMENTS';
 export const UPDATE_PLAYED = 'UPDATE_PLAYED';
 export const UPDATE_PLAYING = 'UPDATE_PLAYING';
+export const UPDATE_PLAYING_VIDEO = 'UPDATE_PLAYING_VIDEO';
