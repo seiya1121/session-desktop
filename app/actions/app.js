@@ -71,3 +71,5 @@ export const progress = (state) => {
   const playingStatus = (state.loaded) ? { played, loaded } : { played };
   return { type: App.PROGRESS, playingStatus };
 };
+export const updateQue = (que) => ({ type: App.UPDATE_QUE, que });
+export const updateComments = (comments) => ({ type: App.UPDATE_COMMENTS, comments });

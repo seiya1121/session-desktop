@@ -50,6 +50,10 @@ const app = (state = App.InitialState, action) => {
       return newState({ comments: [...state.comments, action.comment], commentText: '' });
     case App.SET_SEARCH_RESULT:
       return newState({ searchResult: action.result });
+    case App.UPDATE_QUE:
+      return newState({ que: action.que });
+    case App.UPDATE_COMMENTS:
+      return newState({ comments: action.comments });
     default:
       return state;
   }
