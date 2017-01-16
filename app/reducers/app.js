@@ -46,8 +46,6 @@ const app = (state = App.InitialState, action) => {
       return newState({ playing: action.playing, played: action.startTime });
     case App.PROGRESS:
       return !state.seeking ? newState(action.playingStatus) : state;
-    case App.SET_COMMENT:
-      return newState({ comments: [...state.comments, action.comment], commentText: '' });
     case App.SET_SEARCH_RESULT:
       return newState({ searchResult: action.result });
     case App.UPDATE_QUE:
