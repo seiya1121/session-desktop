@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as AppActions from '../actions/app';
 import { YOUTUBE_API_KEY } from '../config/apiKey';
-import { SyncStates, CommandType, CommentType } from '../constants/app';
+import { SyncStates, CommandType, CommentType, DefaultVideo } from '../constants/app';
 import { base, firebaseAuth } from '../config/firebaseApp';
 import YouTubeNode from 'youtube-node';
 import ReactPlayer from 'react-player';
@@ -32,7 +32,11 @@ class App extends ReactBaseComponent {
   componentWillMount() {
     firebaseAuth.onAuthStateChanged((user) => {
       // if (user) { this.props.appActions.setUser(user, true); }
-      if (user) { this.props.appActions.setDefaultUser(); }
+      if (user) {
+        this.props.appActions.setDefaultUser();
+      } else {
+        this.props.appActions.setDefaultUser();
+      }
     });
     SyncStates.forEach((obj) => {
       const { state, asArray } = obj;
@@ -41,7 +45,6 @@ class App extends ReactBaseComponent {
         then(data) { this.props.appActions.updateSyncState(state, data); },
       });
     });
-    this.props.appActions.setDefaultUser();
   }
 
   componentDidMount() {
@@ -190,6 +193,7 @@ class App extends ReactBaseComponent {
     const isPostPlayingVideo = app.playingVideo !== '';
     const comments = (app.isCommentActive) ?
       app.comments : app.comments.slice(app.comments.length - 3, app.comments.length);
+    const playingVideo = app.playingVideo || DefaultVideo;
 
     const headerForNotLogin = (
       <div className="none">
@@ -295,8 +299,8 @@ class App extends ReactBaseComponent {
       </li>
     ));
 
-    const queNode = app.que.map((video, i) => (
-      <li key={i} className="list-group-item">
+    const queNode = app.que.map((video) => (
+      <li key={video.key} className="list-group-item">
         <div
           className="list-group-item__click"
           onClick={() => appActions.postPlayingVideo(video)}
@@ -311,7 +315,7 @@ class App extends ReactBaseComponent {
             <p className="list-group-item__name">added by {video.userName}</p>
           </div>
         </div>
-        <div className="list-group-item__close" onClick={() => appActions.removeVideo(i)}>
+        <div className="list-group-item__close" onClick={() => appActions.removeVideo(video)}>
         </div>
       </li>
     ));
@@ -363,7 +367,7 @@ class App extends ReactBaseComponent {
               className="react-player"
               width={"100%"}
               height={"100%"}
-              url={youtubeUrl(app.playingVideo.videoId)}
+              url={youtubeUrl(playingVideo.videoId)}
               playing={app.playing}
               volume={app.volume}
               soundcloudConfig={app.soundcloudConfig}
@@ -453,7 +457,7 @@ class App extends ReactBaseComponent {
             {
               isPostPlayingVideo &&
                 <p className="progress-box__ttl">
-                  {app.playingVideo.title} {app.playingVideo.displayName}
+                  {playingVideo.title} {playingVideo.displayName}
                 </p>
             }
             {

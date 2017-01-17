@@ -4,6 +4,10 @@ export const DefaultUser = Object.assign(
   {},
   { name: getAnimalName(), photoURL: '', isLogin: false }
 );
+export const DefaultVideo = Object.assign(
+  {},
+  { videoId: '', title: '', thumbnail: { url: '' }, displayName: '' }
+);
 
 export const SyncStates = [
   { state: 'que', asArray: true },
@@ -22,7 +26,7 @@ export const InitialState = {
   searchResult: [],
   comments: [],
   que: [],
-  playingVideo: {},
+  playingVideo: DefaultVideo,
   playing: true,
   startTime: 0,
   commentText: '',

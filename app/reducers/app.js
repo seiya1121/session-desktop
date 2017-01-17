@@ -18,7 +18,7 @@ const app = (state = App.InitialState, action) => {
     case App.SET_DEFAULT_USER:
       return newState({ currentUser: App.DefaultUser });
     case App.PLAY_PAUSE:
-      return newState({ playing: action.playing, startTime: state.played });
+      return state;
     case App.CHANGE_VOLUME:
       return newState({ volume: parseFloat(action.volume) });
     case App.SEEK_DOWN:
@@ -28,9 +28,9 @@ const app = (state = App.InitialState, action) => {
     case App.CHANGE_PLAYED:
       return newState({ played: action.played, seeking: false });
     case App.PLAY:
-      return newState({ playing: action.playing });
+      return state;
     case App.PAUSE:
-      return newState({ playing: action.playing, played: action.startTime });
+      return state;
     case App.PROGRESS:
       return !state.seeking ? newState(action.playingStatus) : state;
     case App.SET_SEARCH_RESULT:
@@ -49,8 +49,8 @@ const app = (state = App.InitialState, action) => {
       return newState({
         playing: true,
         startTime: 0,
-        playingVideo: action.video,
-        que: state.que.filter((item) => item.key !== action.video.key),
+        playingVideo: action.playingVideo,
+        que: state.que.filter((item) => item.key !== action.playingVideo.key),
       });
     default:
       return state;

@@ -7,7 +7,13 @@ const remove = (endPoint) => base.remove(endPoint);
 
 // sync系
 export const postPlayingVideo = (video) => {
-  post('playingVideo', video);
+  if (video) {
+    post('playingVideo', video);
+    post('startTime', 0);
+  } else {
+    post('playingVideo', {});
+    post('startTime', 0);
+  }
   return { type: App.POST_PLAYING_VIDEO };
 };
 export const pushVideo = (video) => {
@@ -18,30 +24,23 @@ export const addComment = (comment) => {
   push('comments', comment);
   return { type: App.ADD_COMMENT };
 };
-export const removeVideo = (index) => {
-  remove(`que/${index}`);
-  console.log(`que/${index}`);
+export const removeVideo = (video) => {
+  remove(`que/${video.key}`);
   return { type: App.REMOVE_VIDEO };
 };
 export const changePlayed = (played) => {
   post('startTime', played);
   return { type: App.CHANGE_PLAYED, played };
 };
-export const play = () => {
-  const playing = true;
-  post('playing', playing);
-  return { type: App.PLAY, playing };
-};
+export const play = () => ({ type: App.PLAY });
 export const pause = (startTime) => {
-  const playing = false;
-  post('playing', playing);
   post('startTime', startTime);
-  return { type: App.PAUSE, playing, startTime };
+  return { type: App.PAUSE };
 };
 export const playPause = (isPlaying) => {
   const playing = !isPlaying;
   post('playing', playing);
-  return { type: App.PLAY_PAUSE, playing };
+  return { type: App.PLAY_PAUSE };
 };
 
 // local系
@@ -75,4 +74,8 @@ export const updateQue = (que) => ({ type: App.UPDATE_QUE, que });
 export const updateComments = (comments) => ({ type: App.UPDATE_COMMENTS, comments });
 export const updatePlayed = (played) => ({ type: App.UPDATE_PLAYED, played });
 export const updatePlaying = (playing) => ({ type: App.UPDATE_PLAYING, playing });
-export const updatePlayingVideo = (video) => ({ type: App.UPDATE_PLAYING_VIDEO, video });
+export const updatePlayingVideo = (video) => {
+  const playingVideo = Object.keys(video).length === 0 ? App.DefaultVideo : video;
+  console.log(playingVideo);
+  return { type: App.UPDATE_PLAYING_VIDEO, playingVideo };
+};
