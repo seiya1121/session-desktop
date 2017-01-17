@@ -76,6 +76,5 @@ export const updatePlayed = (played) => ({ type: App.UPDATE_PLAYED, played });
 export const updatePlaying = (playing) => ({ type: App.UPDATE_PLAYING, playing });
 export const updatePlayingVideo = (video) => {
   const playingVideo = Object.keys(video).length === 0 ? App.DefaultVideo : video;
-  console.log(playingVideo);
   return { type: App.UPDATE_PLAYING_VIDEO, playingVideo };
 };
