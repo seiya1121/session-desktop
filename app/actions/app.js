@@ -10,8 +10,10 @@ export const postPlayingVideo = (video) => {
   if (video) {
     post('playingVideo', video);
     post('startTime', 0);
+    remove(`que/${video.key}`);
   } else {
-    post('playingVideo', {});
+    post('playingVideo', App.DefaultVideo);
+    remove(`que/${video.key}`);
     post('startTime', 0);
   }
   return { type: App.POST_PLAYING_VIDEO };
@@ -38,8 +40,7 @@ export const pause = (startTime) => {
   return { type: App.PAUSE };
 };
 export const playPause = (isPlaying) => {
-  const playing = !isPlaying;
-  post('playing', playing);
+  post('playing', !isPlaying);
   return { type: App.PLAY_PAUSE };
 };
 

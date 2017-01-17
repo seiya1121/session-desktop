@@ -60,6 +60,7 @@ class App extends ReactBaseComponent {
       context: this,
       asArray: false,
       then(playing) {
+        console.log(playing);
         this.props.appActions.updatePlaying(playing);
       },
     });

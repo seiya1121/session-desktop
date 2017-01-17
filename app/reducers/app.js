@@ -9,6 +9,12 @@ const app = (state = App.InitialState, action) => {
       return state;
     case App.REMOVE_VIDEO:
       return state;
+    case App.PLAY:
+      return state;
+    case App.PAUSE:
+      return state;
+    case App.PLAY_PAUSE:
+      return state;
     case App.CHANGE_TEXT_WITH_ACTIVE:
       return newState({ [action.textType]: action.text, [action.flgType]: action.value });
     case App.SET_USER:
@@ -17,8 +23,6 @@ const app = (state = App.InitialState, action) => {
       return newState({ commentText: '', isCommentActive: false });
     case App.SET_DEFAULT_USER:
       return newState({ currentUser: App.DefaultUser });
-    case App.PLAY_PAUSE:
-      return state;
     case App.CHANGE_VOLUME:
       return newState({ volume: parseFloat(action.volume) });
     case App.SEEK_DOWN:
@@ -27,10 +31,6 @@ const app = (state = App.InitialState, action) => {
       return newState({ seeking: false, startTime: action.played });
     case App.CHANGE_PLAYED:
       return newState({ played: action.played, seeking: false });
-    case App.PLAY:
-      return state;
-    case App.PAUSE:
-      return state;
     case App.PROGRESS:
       return !state.seeking ? newState(action.playingStatus) : state;
     case App.SET_SEARCH_RESULT:
