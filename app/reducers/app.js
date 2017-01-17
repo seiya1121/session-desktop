@@ -5,6 +5,10 @@ const app = (state = App.InitialState, action) => {
   switch (action.type) {
     case App.CHANGE_VALUE_WITH_KEY:
       return newState({ [action.key]: action.value });
+    case App.POST_PLAYING_VIDE:
+      return state;
+    case App.REMOVE_VIDEO:
+      return state;
     case App.CHANGE_TEXT_WITH_ACTIVE:
       return newState({ [action.textType]: action.text, [action.flgType]: action.value });
     case App.SET_USER:

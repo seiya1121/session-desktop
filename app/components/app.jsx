@@ -41,6 +41,7 @@ class App extends ReactBaseComponent {
         then(data) { this.props.appActions.updateSyncState(state, data); },
       });
     });
+    this.props.appActions.setDefaultUser();
   }
 
   componentDidMount() {

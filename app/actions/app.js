@@ -20,6 +20,7 @@ export const addComment = (comment) => {
 };
 export const removeVideo = (index) => {
   remove(`que/${index}`);
+  console.log(`que/${index}`);
   return { type: App.REMOVE_VIDEO };
 };
 export const changePlayed = (played) => {
