@@ -15,6 +15,8 @@ const app = (state = App.InitialState, action) => {
       return state;
     case App.PLAY_PAUSE:
       return state;
+    case App.PUSH_PLAY_COMMENT:
+      return state;
     case App.CHANGE_TEXT_WITH_ACTIVE:
       return newState({ [action.textType]: action.text, [action.flgType]: action.value });
     case App.SET_USER:

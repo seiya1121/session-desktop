@@ -11,14 +11,11 @@ const commentObj = (content, userName, type, keyword) => (
 // sync系
 export const postPlayingVideo = (video) => {
   if (video) {
-    const comment = commentObj(`# ${video.title}`, video.userName, App.CommentType.log, '');
     post('playingVideo', video);
     post('startTime', 0);
-    push('comments', comment);
     remove(`que/${video.key}`);
   } else {
     post('playingVideo', App.DefaultVideo);
-    remove(`que/${video.key}`);
     post('startTime', 0);
   }
   return { type: App.POST_PLAYING_VIDEO };
@@ -26,6 +23,11 @@ export const postPlayingVideo = (video) => {
 export const pushVideo = (video) => {
   push('que', video);
   return { type: App.PUSH_VIDEO };
+};
+export const pushPlayComment = (video) => {
+  const comment = commentObj(`# ${video.title}`, video.userName, App.CommentType.log, '');
+  push('comments', comment);
+  return { type: App.PUSH_PLAY_COMMENT };
 };
 export const addComment = (comment) => {
   push('comments', comment);

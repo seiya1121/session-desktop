@@ -373,12 +373,12 @@ class App extends ReactBaseComponent {
               youtubeConfig={app.youtubeConfig}
               fileConfig={app.fileConfig}
               onReady={() => appActions.play()}
-              onStart={() => console.log('onStart')}
+              onStart={() => appActions.pushPlayComment(app.playingVideo)}
               onPlay={() => appActions.play()}
               onPause={() => appActions.pause(app.played)}
               onBuffer={() => console.log('onBuffer')}
               onEnded={() => appActions.postPlayingVideo(app.que[0])}
-              onError={(e) => console.log('onError', e)}
+              onError={() => appActions.postPlayingVideo(app.que[0])}
               onProgress={this.onProgress}
               onDuration={(duration) => appActions.changeValueWithKey('duration', duration)}
             />
