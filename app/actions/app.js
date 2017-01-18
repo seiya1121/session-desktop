@@ -4,12 +4,17 @@ import { base } from '../config/firebaseApp.js';
 const push = (stateName, data) => base.push(stateName, { data });
 const post = (stateName, data) => base.post(stateName, { data });
 const remove = (endPoint) => base.remove(endPoint);
+const commentObj = (content, userName, type, keyword) => (
+  Object.assign({}, { content, userName, type, keyword })
+);
 
 // sync系
 export const postPlayingVideo = (video) => {
   if (video) {
+    const comment = commentObj(`# ${video.title}`, video.userName, App.CommentType.log, '');
     post('playingVideo', video);
     post('startTime', 0);
+    push('comments', comment);
     remove(`que/${video.key}`);
   } else {
     post('playingVideo', App.DefaultVideo);

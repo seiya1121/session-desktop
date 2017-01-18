@@ -155,7 +155,6 @@ input {
     position: absolute;
     left: 0;
     bottom: 40px;
-    font-size: 16px;
     padding: 0;
     width: 100%;
     overflow: hidden;
@@ -166,6 +165,7 @@ input {
       list-style: none;
       border-radius: 10px;
       padding: 10px;
+      font-size: 16px;
       background: transparentize($color-white, .4);
       float: left;
       clear: left;
@@ -178,6 +178,7 @@ input {
     &__item--play {
       @extend .comments-stream__item;
       background: $color-key;
+      font-size: 12px;
     }
 
     .comment-single {

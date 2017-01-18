@@ -337,8 +337,7 @@ class App extends ReactBaseComponent {
         case CommentType.log:
           return (
             <li key={i} className="comments-stream__item--play">
-              {comment.content}
-              {comment.userName}
+              {comment.content} by {comment.userName}
             </li>
           );
         case CommentType.gif:
