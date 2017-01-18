@@ -138,6 +138,7 @@ class App extends ReactBaseComponent {
     };
     const youTubeNode = new YouTubeNode();
     youTubeNode.setKey(YOUTUBE_API_KEY);
+    youTubeNode.addParam('type', 'video');
     youTubeNode.search(this.props.app.searchText, 50, (error, result) => searchFunc(error, result));
     return true;
   }
