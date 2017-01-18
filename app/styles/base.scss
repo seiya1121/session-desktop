@@ -166,7 +166,7 @@ input {
       border-radius: 10px;
       padding: 10px;
       font-size: 16px;
-      background: transparentize($color-white, 0.4);
+      background: transparentize($color-white, 0.2);
       float: left;
       clear: left;
 
@@ -183,14 +183,14 @@ input {
         // background: transparentize($color-white, 0.6);
       }
       &_2 {
-        background: transparentize($color-white, 0.4);
+        background: transparentize($color-white, 0.2);
       }
     }
 
     &__item--play {
       @extend .comments-stream__item;
       background: $color-key;
-      background: transparentize($color-key, 0.4);
+      background: transparentize($color-key, 0.2);
       font-size: 12px;
 
       &_0 {
@@ -202,7 +202,7 @@ input {
         // background: transparentize($color-key, 0.6);
       }
       &_2 {
-        background: transparentize($color-key, 0.4);
+        background: transparentize($color-key, 0.2);
       }
     }
 
