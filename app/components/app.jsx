@@ -31,7 +31,6 @@ class App extends ReactBaseComponent {
 
   componentWillMount() {
     firebaseAuth.onAuthStateChanged((user) => {
-      // if (user) { this.props.appActions.setUser(user, true); }
       if (user) {
         this.props.appActions.setDefaultUser();
       } else {
@@ -60,7 +59,6 @@ class App extends ReactBaseComponent {
       context: this,
       asArray: false,
       then(playing) {
-        console.log(playing);
         this.props.appActions.updatePlaying(playing);
       },
     });
