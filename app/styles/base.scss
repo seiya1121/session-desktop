@@ -166,19 +166,44 @@ input {
       border-radius: 10px;
       padding: 10px;
       font-size: 16px;
-      background: transparentize($color-white, .4);
+      background: transparentize($color-white, 0.4);
       float: left;
       clear: left;
 
       img {
         width: 100%;
       }
+
+      &_0 {
+        opacity: 0.4;
+        // background: transparentize($color-white, 0.8);
+      }
+      &_1 {
+        opacity: 0.6;
+        // background: transparentize($color-white, 0.6);
+      }
+      &_2 {
+        background: transparentize($color-white, 0.4);
+      }
     }
 
     &__item--play {
       @extend .comments-stream__item;
       background: $color-key;
+      background: transparentize($color-key, 0.4);
       font-size: 12px;
+
+      &_0 {
+        opacity: 0.4;
+        // background: transparentize($color-key, 0.8);
+      }
+      &_1 {
+        opacity: 0.6;
+        // background: transparentize($color-key, 0.6);
+      }
+      &_2 {
+        background: transparentize($color-key, 0.4);
+      }
     }
 
     .comment-single {
@@ -187,7 +212,7 @@ input {
 
     .comment-author {
       padding: 0;
-      color: #666666;
+      color: $color-black;;
     }
   }
 

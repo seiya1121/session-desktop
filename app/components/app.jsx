@@ -319,11 +319,23 @@ class App extends ReactBaseComponent {
       </li>
     ));
 
+    const commentClass = (type, index) => (
+      (type === CommentType.log) ?
+        classNames(
+          'comments-stream__item--play',
+          { [`comments-stream__item--play_${index}`]: !app.isCommentActive },
+        ) :
+        classNames(
+          'comments-stream__item',
+          { [`comments-stream__item_${index}`]: !app.isCommentActive },
+        )
+    );
+
     const commentsNode = comments.map((comment, i) => {
       switch (comment.type) {
         case CommentType.text:
           return (
-            <li key={i} className="comments-stream__item">
+            <li key={i} className={commentClass(comment.type, i)}>
               <div className="comment-single">
                 {comment.content}
               </div>
@@ -334,13 +346,13 @@ class App extends ReactBaseComponent {
           );
         case CommentType.log:
           return (
-            <li key={i} className="comments-stream__item--play">
+            <li key={i} className={commentClass(comment.type, i)}>
               {comment.content} by {comment.userName}
             </li>
           );
         case CommentType.gif:
           return (
-            <li key={i} className="comments-stream__item">
+            <li key={i} className={commentClass(comment.type, i)}>
               <p>{comment.keyword}</p>
               <img src={comment.content} alt=""></img>
               <div className="comment-author">
