@@ -46,7 +46,6 @@ export const InitialState = {
 };
 
 export const CHANGE_VALUE_WITH_KEY = 'CHANGE_VALUE_WITH_KEY';
-export const CHANGE_TEXT_WITH_ACTIVE = 'CHANGE_TEXT_WITH_ACTIVE';
 export const POST_PLAYING_VIDEO = 'POST_PLAYING_VIDEO';
 export const SET_USER = 'SET_USER';
 export const PUSH_VIDEO = 'PUSH_VIDEO';

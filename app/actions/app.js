@@ -55,12 +55,6 @@ export const playPause = (isPlaying) => {
 export const changeValueWithKey = (key, value) => ({
   type: App.CHANGE_VALUE_WITH_KEY, key, value,
 });
-export const changeTextWithACtive = (textType, text, flgType) => ({
-  type: App.CHANGE_TEXT_WITH_ACTIVE, textType, text, flgType, value: text.length >= 1,
-});
-export const changeCommentText = (text) => ({
-  type: App.CHANGE_COMMENT_TEXT, text, isCommentActive: text.length >= 1,
-});
 export const setUser = (user, isLogin) => ({ type: App.SET_USER, user, isLogin });
 export const setDefaultUser = () => ({ type: App.SET_DEFAULT_USER });
 export const changeVolume = (volume) => ({ type: App.CHANGE_VOLUME, volume });

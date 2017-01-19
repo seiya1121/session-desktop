@@ -269,8 +269,10 @@ class App extends ReactBaseComponent {
           type="text"
           placeholder="Search videos"
           onChange={(e) => {
-            appActions.changeTextWithACtive('searchText', e.target.value, 'isSearchActive');
+            appActions.changeValueWithKey('searchText', e.target.value);
           }}
+          onFocus={() => { appActions.changeValueWithKey('isSearchActive', true); }}
+          onBlur={() => { appActions.changeValueWithKey('isSearchActive', false); }}
           onKeyPress={this.onKeyPressForSearch}
           value={app.searchText}
         >
@@ -406,9 +408,9 @@ class App extends ReactBaseComponent {
               className="comment-input"
               type="text"
               placeholder="type comment"
-              onChange={(e) => {
-                appActions.changeTextWithACtive('commentText', e.target.value, 'isCommentActive');
-              }}
+              onChange={(e) => { appActions.changeValueWithKey('commentText', e.target.value); }}
+              onFocus={() => { appActions.changeValueWithKey('isCommentActive', true); }}
+              onBlur={() => { appActions.changeValueWithKey('isCommentActive', false); }}
               onKeyPress={this.onKeyPressForComment}
               value={app.commentText}
             >
