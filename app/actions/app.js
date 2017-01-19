@@ -14,6 +14,8 @@ export const postPlayingVideo = (video) => {
     post('playingVideo', video);
     post('startTime', 0);
     remove(`que/${video.key}`);
+    const comment = commentObj(`# ${video.title}`, video.userName, App.CommentType.log, '');
+    push('comments', comment);
   } else {
     post('playingVideo', App.DefaultVideo);
     post('startTime', 0);
@@ -23,11 +25,6 @@ export const postPlayingVideo = (video) => {
 export const pushVideo = (video) => {
   push('que', video);
   return { type: App.PUSH_VIDEO };
-};
-export const pushPlayComment = (video) => {
-  const comment = commentObj(`# ${video.title}`, video.userName, App.CommentType.log, '');
-  push('comments', comment);
-  return { type: App.PUSH_PLAY_COMMENT };
 };
 export const addComment = (comment) => {
   push('comments', comment);

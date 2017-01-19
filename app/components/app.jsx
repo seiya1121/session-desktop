@@ -136,6 +136,7 @@ class App extends ReactBaseComponent {
         this.props.appActions.setSearchResult(result);
       }
     };
+    this.props.appActions.changeValueWithKey('searchedText', this.props.app.searchText);
     const youTubeNode = new YouTubeNode();
     youTubeNode.setKey(YOUTUBE_API_KEY);
     youTubeNode.addParam('type', 'video');
@@ -388,10 +389,8 @@ class App extends ReactBaseComponent {
               youtubeConfig={app.youtubeConfig}
               fileConfig={app.fileConfig}
               onReady={() => appActions.play()}
-              onStart={() => appActions.pushPlayComment(app.playingVideo)}
               onPlay={() => appActions.play()}
               onPause={() => appActions.pause(app.played)}
-              onBuffer={() => console.log('onBuffer')}
               onEnded={() => appActions.postPlayingVideo(app.que[0])}
               onError={() => appActions.postPlayingVideo(app.que[0])}
               onProgress={this.onProgress}
@@ -437,7 +436,7 @@ class App extends ReactBaseComponent {
             <div className="display-search">
               <p className="list-group-title">
                 search for
-                <span className="list-group-title__number">{app.searchText}</span>
+                <span className="list-group-title__number">{app.searchedText}</span>
               </p>
               <ul className="list-group">
                 {searchResultNode}

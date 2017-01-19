@@ -15,8 +15,6 @@ const app = (state = App.InitialState, action) => {
       return state;
     case App.PLAY_PAUSE:
       return state;
-    case App.PUSH_PLAY_COMMENT:
-      return state;
     case App.SET_USER:
       return newState({ currentUser: action.user });
     case App.ADD_COMMENT:

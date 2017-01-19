@@ -36,6 +36,7 @@ export const InitialState = {
   mailAddressForSignIn: '',
   passwordForSignIn: '',
   searchText: '',
+  searchedText: '',
   volume: 0.8,
   played: 0,
   loaded: 0,
@@ -49,7 +50,6 @@ export const CHANGE_VALUE_WITH_KEY = 'CHANGE_VALUE_WITH_KEY';
 export const POST_PLAYING_VIDEO = 'POST_PLAYING_VIDEO';
 export const SET_USER = 'SET_USER';
 export const PUSH_VIDEO = 'PUSH_VIDEO';
-export const PUSH_PLAY_COMMENT = 'PUSH_PLAY_COMMENT';
 export const REMOVE_VIDEO = 'REMOVE_VIDEO';
 export const PLAY_PAUSE = 'PLAY_PAUSE';
 export const CHANGE_VOLUME = 'CHANGE_VOLUME';
