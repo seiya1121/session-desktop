@@ -230,6 +230,14 @@ input {
     width: 100%;
     height: 3em;
     font-size: 12px;
+    transition: .2s;
+
+    &.is-active {
+      color: $color-black;
+      background: $color-white;
+      width: calc( 30% - 40px );
+      transition: .5s;
+    }
   }
 }
 

@@ -404,7 +404,7 @@ class App extends ReactBaseComponent {
               {commentsNode}
             </ul>
             <input
-              className="comment-input"
+              className={classNames('comment-input', { 'is-active': !app.isCommentActive })}
               type="text"
               placeholder="type comment"
               onChange={(e) => { appActions.changeValueWithKey('commentText', e.target.value); }}
