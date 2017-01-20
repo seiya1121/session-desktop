@@ -3,7 +3,17 @@
   <head>
   </head>
   <body style="-webkit-app-region: drag">
-    <div id="root"></div>
-    <script src="./dist/scripts/app.bundle.js"></script>
+    <!-- <div id="root"></div>
+    <script src="./dist/scripts/app.bundle.js"></script> -->
+    <webview id="mainWebview" src="http://localhost:3000/" autosize="on"></webview>
+    <style>
+      webview {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+    </style>
   </body>
 </html>
