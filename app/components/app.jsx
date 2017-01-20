@@ -32,7 +32,9 @@ class App extends ReactBaseComponent {
   componentWillMount() {
     firebaseAuth.onAuthStateChanged((user) => {
       if (user) {
-        this.props.appActions.setDefaultUser();
+        this.props.appActions.setUser({
+          name: user.displayName, photoURL: user.photoURL, isLogin: true,
+        });
       } else {
         this.props.appActions.setDefaultUser();
       }
@@ -91,7 +93,9 @@ class App extends ReactBaseComponent {
       });
     firebaseAuth.onAuthStateChanged((user) => {
       if (user) {
-        this.props.appActions.setUser({ name: displayName, photoURL: user.photoURL }, true);
+        this.props.appActions.setUser({
+          name: displayName, photoURL: user.photoURL, isLogin: true,
+        });
       }
     });
   }
@@ -100,7 +104,9 @@ class App extends ReactBaseComponent {
     const { mailAddressForSignIn, passwordForSignIn } = this.props.app;
     firebaseAuth.signInWithEmailAndPassword(mailAddressForSignIn, passwordForSignIn)
       .then((user) => {
-        this.props.appActions.setUser({ name: user.displayName, photoURL: user.photoURL }, true);
+        this.props.appActions.setUser({
+          name: user.displayName, photoURL: user.photoURL, isLogin: true,
+        });
       })
       .catch((error) => {
         console.log(error.code);
@@ -197,7 +203,7 @@ class App extends ReactBaseComponent {
     const playingVideo = app.playingVideo || DefaultVideo;
 
     const headerForNotLogin = (
-      <div className="none">
+      <div>
         <div>
           <input
             className="comment-input"
@@ -248,20 +254,16 @@ class App extends ReactBaseComponent {
     );
 
     const headerForLogedin = (
-      <div className="none">
-        <div>
-          <p>{name}</p>
-          <p>{photoURL}</p>
-        </div>
+      <div>
+        <p>{name}</p>
+        <p>{photoURL}</p>
         <button onClick={this.onClickSignOut}>Sign Out</button>
       </div>
     );
 
     const headerNode = (
       <header className="header-bar">
-        {/* ログイン機能、レイアウト考える上でめんどいから一旦非表示 */}
         {(isLogin) ? headerForLogedin : headerForNotLogin}
-
         <input
           className={classNames(
             'form-search',
@@ -273,7 +275,6 @@ class App extends ReactBaseComponent {
             appActions.changeValueWithKey('searchText', e.target.value);
           }}
           onFocus={() => { appActions.changeValueWithKey('isSearchActive', true); }}
-          onBlur={() => { appActions.changeValueWithKey('isSearchActive', false); }}
           onKeyPress={this.onKeyPressForSearch}
           value={app.searchText}
         >
