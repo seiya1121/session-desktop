@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "lint": "",
-    "start": "electron .",
-    "build": ""
+    "start": "electron ."
   },
   "devDependencies": {
     "electron": "^1.4.1",

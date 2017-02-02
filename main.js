@@ -17,6 +17,7 @@ app.on('ready', () => {
   });
   mainWindow.loadURL(`file://${__dirname}/app/index.html`);
   mainWindow.on('closed', () => {
+    electron.session.defaultSession.clearCache(() => {});
     mainWindow = null;
   });
 });
