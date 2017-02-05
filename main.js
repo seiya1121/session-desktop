@@ -5,6 +5,7 @@ let mainWindow = null;
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
+    electron.session.defaultSession.clearCache(() => {});
     app.quit();
   }
 });
